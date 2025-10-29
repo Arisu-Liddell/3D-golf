@@ -32,25 +32,32 @@ void CameraUpdate(void)//ポリゴン更新
 {
 	if (Keyboard_IsKeyDown(KK_A))
 	{
-		g_Rotation.y += 0.1f;
+		g_Target.x -= 1.0f;
 	}
 	if (Keyboard_IsKeyDown(KK_D))
 	{
-		g_Rotation.y -= 0.1f;
+		g_Target.x += 1.0f;
 	}
-
-	g_Position.x = sinf(g_Rotation.y) * 3.0f;
-	g_Position.z = -cosf(g_Rotation.y) * 3.0f;
-	//sin cosを逆にすると90.逆になる　横基準ではなく奥行き基準で
-
-	if (Keyboard_IsKeyDown(KK_W))
+	if (Keyboard_IsKeyDown(KK_UP))
 	{
 		g_Target.y += 1.0f;
 	}
-	if (Keyboard_IsKeyDown(KK_S))
+	if (Keyboard_IsKeyDown(KK_DOWN))
 	{
 		g_Target.y -= 1.0f;
 	}
+	if (Keyboard_IsKeyDown(KK_RIGHT))
+	{
+		g_Rotation.y += 0.1f;
+	}
+	if (Keyboard_IsKeyDown(KK_LEFT))
+	{
+		g_Rotation.y -= 0.1f;
+	}
+	g_Position.x = g_Target.x + sinf(g_Rotation.y) * 3.0f;
+	g_Position.z = g_Target.z - cosf(g_Rotation.y) * 3.0f;
+	//sin cosを逆にすると90.逆になる　横基準ではなく奥行き基準で
+
 }
 void CameraDraw(void)//ポリゴン描画
 {
