@@ -13,6 +13,7 @@ static ID3D11DepthStencilView* g_DepthStencilView = NULL; //深度ステンシルビュー
 static ID3D11RasterizerState* g_RasterizerState = NULL; //ビューポート
 static ID3D11BlendState* g_BlendState = NULL; //ブレンドステート
 static ID3D11DepthStencilState* g_DepthStencilStateDepthDisable = NULL; //深度ステンシルステート無効
+static ID3D11DepthStencilState* g_DepthStencilStateDepthEnable  = NULL; //深度ステンシルステート無効
 
 
 
@@ -128,10 +129,11 @@ void DirectXInitialize(HWND hWnd)
 	dsd.DepthEnable = FALSE;
 	dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dsd.DepthFunc = D3D11_COMPARISON_LESS;
-	dsd.StencilEnable = FALSE;
-	g_Device->CreateDepthStencilState(&dsd, &g_DepthStencilStateDepthDisable);
-	g_DeviceContext->OMSetDepthStencilState(g_DepthStencilStateDepthDisable, NULL);
 
+		dsd.StencilEnable = FALSE;
+		g_Device->CreateDepthStencilState(&dsd, &g_DepthStencilStateDepthDisable);
+		dsd.DepthEnable = TRUE;
+		g_Device->CreateDepthStencilState(&dsd, &g_DepthStencilStateDepthEnable);
 }
 void DirectXFinalize(void)
 {
@@ -171,4 +173,19 @@ void Present(void)
 {
 	//画面更新
 	g_SwapChain->Present(0, 0);
+}
+
+
+
+
+void SetDepthEnable(bool DepthEnable)
+{
+	if (DepthEnable)
+	{
+		g_DeviceContext->OMSetDepthStencilState(g_DepthStencilStateDepthEnable, NULL);
+	}
+	else 
+	{
+		g_DeviceContext->OMSetDepthStencilState(g_DepthStencilStateDepthDisable, NULL);
+	}
 }

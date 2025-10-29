@@ -18,6 +18,9 @@ ID3D11DeviceContext* DirectXGetDeviceContext(void);//デバイスコンテキスト取得
 void Clear(void);//画面クリア
 void Present(void);//画面更新
 
+//void SetBlend;
+void SetDepthEnable(bool DepthEnable);//Zバッファスイッチ
+
 #define SCREEN_WIDTH (1280)//画面幅
 #define SCREEN_HEIGHT (720)//画面高さ
 
