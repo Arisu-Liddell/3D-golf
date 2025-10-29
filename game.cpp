@@ -39,20 +39,14 @@ void GameUpdate(void)
 
 void GameDraw(void)
 {
-	CameraDraw();
-	//if (g_Pause)
-	//{
-	//	//•`‰æˆ—
-	//	PauseDraw();
-	//	ScoreDraw();
-	//}
-	//if (!g_Pause)
-	//{
-	//	//•`‰æˆ—
+	SetDepthEnable(true);
 
-	//}
+	CameraDraw();
 	CubeDraw();
-	//ScoreDraw();
+
+	SetDepthEnable(false);
+
+	ScoreDraw();
 }
 
 
