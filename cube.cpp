@@ -11,13 +11,6 @@ static ID3D11Buffer* g_VertexBuffer; //頂点バッファ
 static ID3D11Buffer* g_IndexBuffer; //インデックスバッファ
 
 
-//頂点構造体
-struct Vertex
-{
-	XMFLOAT3 position;//頂点座標　GPUメモリに用意しなくちゃいけない
-	XMFLOAT2 texcoord; //テクスチャ座標
-};
-
 static const int g_IndexCount = 36; //インデックス数
 static int g_Texture;
 

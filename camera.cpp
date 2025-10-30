@@ -20,7 +20,7 @@ XMMATRIX GetCameraProjectionMatrix(void)
 
 void CameraInitialize(void)//ƒ|ƒŠƒSƒ“‰Šú‰»
 {
-	g_Position = XMFLOAT3(0.0f, 10.0f,	-10.0f);
+	g_Position = XMFLOAT3(0.0f, 5.0f,	-10.0f);
 	g_Rotation = XMFLOAT3(0.0f,	0.0f,	0.0f);
 	g_Target   = XMFLOAT3(0.0f, 0.0f,	0.0f);
 }

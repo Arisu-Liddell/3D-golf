@@ -6,6 +6,7 @@
 #include "pause.h"
 #include "cube.h"
 #include "camera.h"
+#include "ball.h"
 
 
 
@@ -16,7 +17,9 @@ void GameInitialize(void)
 {
 	CameraInitialize();
 	PauseInitialize();
+	BallInitialize();
 	CubeInitialize();
+
 	ScoreInitialize();
 }
 
@@ -32,6 +35,7 @@ void GameUpdate(void)
 	//{
 	//}
 	PauseDraw();
+	BallDraw();
 	CubeUpdate();
 	ScoreUpdate();
 
@@ -43,6 +47,7 @@ void GameDraw(void)
 
 	CameraDraw();
 	CubeDraw();
+	BallDraw();
 
 	SetDepthEnable(false);
 
@@ -54,5 +59,7 @@ void GameFinalize(void)
 {
 	CameraDraw();
 	CubeFinalize();
+	BallFinalize();
+
 	ScoreFinalize();
 }
