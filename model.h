@@ -25,3 +25,11 @@ MODEL* ModelLoad(const char* FileName);
 void ModelRelease(MODEL* model);
 void ModelDraw(MODEL* model);
 
+// map 
+// 	std::map<std::string, int> Value;
+// value["name"] = 2; 配列のように使える
+// unordered_map 整列しない代わりに高速
+
+//shader 法線＝normal 頂点データごとに
+// 
+//mapping 処理

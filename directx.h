@@ -12,6 +12,7 @@ struct Vertex
 {
 	XMFLOAT3 position;//頂点座標　GPUメモリに用意しなくちゃいけない
 	XMFLOAT2 texcoord; //テクスチャ座標
+	XMFLOAT3 normal; //法線ベクトル
 };
 
 #define SAFE_RELEASE(o) if(o){ (o)->Release(); o = NULL; }//オブジェクトの解放マクロ
