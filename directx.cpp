@@ -50,7 +50,7 @@ void DirectXInitialize(HWND hWnd)
 
 	if (FAILED(hr))
 	{
-	//	MessageBox(hWnd, "DirectX‚Ì‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½", "ƒGƒ‰[", MB_OK);
+		//	MessageBox(hWnd, "DirectX‚Ì‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½", "ƒGƒ‰[", MB_OK);
 		return;
 	}
 
@@ -130,10 +130,14 @@ void DirectXInitialize(HWND hWnd)
 	dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	dsd.DepthFunc = D3D11_COMPARISON_LESS;
 
+	{
 		dsd.StencilEnable = FALSE;
 		g_Device->CreateDepthStencilState(&dsd, &g_DepthStencilStateDepthDisable);
+	}
+	{
 		dsd.DepthEnable = TRUE;
 		g_Device->CreateDepthStencilState(&dsd, &g_DepthStencilStateDepthEnable);
+	}
 }
 void DirectXFinalize(void)
 {

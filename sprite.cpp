@@ -6,13 +6,6 @@ static ID3D11Buffer* g_VertexBuffer; //頂点バッファ
 static const int g_VertexCount = 4; //頂点数
 
 
-//頂点構造体
-struct Vertex
-{
-	XMFLOAT3 position;//頂点座標　GPUメモリに用意しなくちゃいけない
-	XMFLOAT2 texcoord; //テクスチャ座標
-};
-
 void SpriteInitialize(void)
 {
 	//頂点バッファ生成

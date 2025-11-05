@@ -7,6 +7,13 @@
 #include <DirectXMath.h>//ベクトルやマトリクスを扱うためのヘッダファイル
 using namespace DirectX;//DirectXMathを使うための名前空間指定
 
+//頂点構造体
+struct Vertex
+{
+	XMFLOAT3 position;//頂点座標　GPUメモリに用意しなくちゃいけない
+	XMFLOAT2 texcoord; //テクスチャ座標
+};
+
 #define SAFE_RELEASE(o) if(o){ (o)->Release(); o = NULL; }//オブジェクトの解放マクロ
 
 void DirectXInitialize(HWND hWnd);//立ち上げ処理
