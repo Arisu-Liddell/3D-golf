@@ -7,6 +7,7 @@
 #include "cube.h"
 #include "camera.h"
 #include "ball.h"
+#include "shader.h"
 
 
 
@@ -45,12 +46,18 @@ void GameDraw(void)
 {
 	SetDepthEnable(true);
 
+	LIGHT light;
+	//light.LightEnable = TRUE;
+	light.LightDirection = { 0.0f,-1.0f,1.0f };
+	Shader_SetLight(light);
+
 	CameraDraw();
 	CubeDraw();
 	BallDraw();
 
 	SetDepthEnable(false);
 
+	//light.LightEnable = FALSE;
 	ScoreDraw();
 }
 

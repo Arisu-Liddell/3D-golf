@@ -10,6 +10,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 #include "directx.h"
+#include "shader.h"
 #include "debug_ostream.h"
 #include <fstream>
 
@@ -18,6 +19,7 @@ using namespace DirectX;
 static ID3D11VertexShader* g_pVertexShader = nullptr;
 static ID3D11InputLayout* g_pInputLayout = nullptr;
 static ID3D11Buffer* g_pVSConstantBuffer = nullptr;
+static ID3D11Buffer* g_pVSLightBuffer = nullptr;
 static ID3D11PixelShader* g_pPixelShader = nullptr;
 static ID3D11SamplerState* g_SamplerState = nullptr; // サンプラーステート
 
@@ -92,10 +94,13 @@ bool Shader_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	// 頂点シェーダー用定数バッファの作成
 	D3D11_BUFFER_DESC buffer_desc{};
-	buffer_desc.ByteWidth = sizeof(XMMATRIX); // バッファのサイズ
+	buffer_desc.ByteWidth = sizeof(XMMATRIX); // バッファのサイズ constant
 	buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // バインドフラグ
 
 	g_pDevice->CreateBuffer(&buffer_desc, nullptr, &g_pVSConstantBuffer);
+
+	buffer_desc.ByteWidth = sizeof(LIGHT); // バッファのサイズ constant
+	g_pDevice->CreateBuffer(&buffer_desc, nullptr, &g_pVSLightBuffer);
 
 
 	// 事前コンパイル済みピクセルシェーダーの読み込み
@@ -163,6 +168,11 @@ void Shader_SetMatrix(const DirectX::XMMATRIX& matrix)
 	// 定数バッファに行列をセット
 	g_pContext->UpdateSubresource(g_pVSConstantBuffer, 0, nullptr, &transpose, 0, 0);
 }
+void Shader_SetLight(const LIGHT& light)
+{
+	// 定数バッファに行列をセット
+	g_pContext->UpdateSubresource(g_pVSLightBuffer, 0, nullptr, &light, 0, 0);
+}
 void Shader_Begin()
 {
 	// 頂点シェーダーとピクセルシェーダーを描画パイプラインに設定
@@ -173,5 +183,6 @@ void Shader_Begin()
 	g_pContext->IASetInputLayout(g_pInputLayout);
 
 	// 定数バッファを描画パイプラインに設定
-	g_pContext->VSSetConstantBuffers(0, 1, &g_pVSConstantBuffer);
+	g_pContext->VSSetConstantBuffers(0, 1, &g_pVSConstantBuffer);//スロット番号0をに設定
+	g_pContext->VSSetConstantBuffers(1, 1, &g_pVSLightBuffer);//スロット番号を1に設定
 }

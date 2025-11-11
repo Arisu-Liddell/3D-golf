@@ -576,6 +576,78 @@ void CubeInitialize(void)
 		v[21].texcoord = { tx + tw,	ty, }; //右上
 		v[22].texcoord = { tx,		ty + th, }; //左下
 		v[23].texcoord = { tx + tw,	ty + th, }; //右上
+
+				//上面
+		v[0].texcoord = { tx,		ty, }; //左上
+		v[1].texcoord = { tx + tw,	ty, }; //右上
+		v[2].texcoord = { tx,		ty +th, }; //左下
+		v[3].texcoord = { tx + tw,	ty +th, }; //右上
+
+		//前面
+		v[4].texcoord = { tx,		ty, }; //左上
+		v[5].texcoord = { tx + tw,	ty, }; //右上
+		v[6].texcoord = { tx,		ty + th, }; //左下
+		v[7].texcoord = { tx + tw,	ty + th, }; //右上
+
+		//右面
+		v[8].texcoord = { tx,		ty, }; //左上
+		v[9].texcoord = { tx + tw,	ty, }; //右上
+		v[10].texcoord = { tx,		ty + th, }; //左下
+		v[11].texcoord = { tx + tw,	ty + th, }; //右上
+
+		//背面
+		v[12].texcoord = { tx,		ty, }; //左上
+		v[13].texcoord = { tx + tw,	ty, }; //右上
+		v[14].texcoord = { tx,		ty + th, }; //左下
+		v[15].texcoord = { tx + tw,	ty + th, }; //右上
+		//左面
+		v[16].texcoord = { tx,		ty, }; //左上
+		v[17].texcoord = { tx + tw,	ty, }; //右上
+		v[18].texcoord = { tx,		ty + th, }; //左下
+		v[19].texcoord = { tx + tw,	ty + th, }; //右上
+		//下面
+		v[20].texcoord = { tx,		ty, }; //左上
+		v[21].texcoord = { tx + tw,	ty, }; //右上
+		v[22].texcoord = { tx,		ty + th, }; //左下
+		v[23].texcoord = { tx + tw,	ty + th, }; //右上
+
+
+
+
+
+		//上面
+		v[0].normal = { 0.0f,1.0f,0.0f}; //左上
+		v[1].normal = { 0.0f,1.0f,0.0f}; //右上
+		v[2].normal = { 0.0f,1.0f,0.0f}; //左下
+		v[3].normal = { 0.0f,1.0f,0.0f}; //右上
+
+		//前面
+		v[4].normal = { 0.0f,0.0f,-1.0f}; //左上
+		v[5].normal = { 0.0f,0.0f,-1.0f}; //右上
+		v[6].normal = { 0.0f,0.0f,-1.0f}; //左下
+		v[7].normal = { 0.0f,0.0f,-1.0f}; //右上
+
+		//右面
+		v[8].normal = { 1.0f,0.0f,0.0f }; //左上
+		v[9].normal = { 1.0f,0.0f,0.0f }; //右上
+		v[10].normal = { 1.0f,0.0f,0.0f }; //左下
+		v[11].normal = { 1.0f,0.0f,0.0f }; //右上
+
+		//背面
+		v[12].normal = { 0.0f,0.0f,1.0f }; //左上
+		v[13].normal = { 0.0f,0.0f,1.0f }; //右上
+		v[14].normal = { 0.0f,0.0f,1.0f }; //左下
+		v[15].normal = { 0.0f,0.0f,1.0f }; //右上
+		//左面
+		v[16].normal = { -1.0f,0.0f,0.0f }; //左上
+		v[17].normal = { -1.0f,0.0f,0.0f }; //右上
+		v[18].normal = { -1.0f,0.0f,0.0f }; //左下
+		v[19].normal = { -1.0f,0.0f,0.0f }; //右上
+		//下面
+		v[20].normal = { 0.0f,-1.0f,0.0f }; //左上
+		v[21].normal = { 0.0f,-1.0f,0.0f }; //右上
+		v[22].normal = { 0.0f,-1.0f,0.0f }; //左下
+		v[23].normal = { 0.0f,-1.0f,0.0f }; //右上
 		DirectXGetDeviceContext()->Unmap(g_VertexBuffer, 0); //バッファのアンマッピング
 	}
 
@@ -687,6 +759,7 @@ void CubeDraw(void)
 		matrix *= XMMatrixTranslation(g_Position[a].x, g_Position[a].y, g_Position[a].z); //移動マトリクス
 		matrix *= GetCameraViewMatrix();//ビューマトリクス
 		matrix *= GetCameraProjectionMatrix();//プロジェクションマトリクス
+
 		Shader_SetMatrix(matrix);//シェーダーに行列を設定
 		//ポリゴン描画
 		DirectXGetDeviceContext()->DrawIndexed(g_IndexCount, 0, 0); //ポリゴンの描画 画数
