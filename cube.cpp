@@ -751,6 +751,7 @@ void CubeDraw(void)
 	//テクスチャ設定
 	ID3D11ShaderResourceView* texture = GetTexture(g_Texture); //テクスチャの取得
 	DirectXGetDeviceContext()->PSSetShaderResources(0, 1, &texture); //テクスチャの設定
+
 	for (int a = 0, b = 0; a < 441; a++)
 	{	//頂点シェーダーに変換行列を設定
 		MATRIX matrix;
