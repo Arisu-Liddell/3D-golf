@@ -196,7 +196,7 @@ void Initialize(HWND hWnd)
 
 	g_Transition = false;
 
-	SetScene(SCENE_TITLE);
+	SetScene(SCENE_GAME);
 
 
 }

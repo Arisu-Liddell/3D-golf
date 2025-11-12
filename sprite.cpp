@@ -29,7 +29,7 @@ void SpriteUpdate(void)
 
 }
 
-void SpriteDraw(float x, float y, float width, float height, float tx, float ty, float tw, float th ,float rot, float wi,float he)
+void SpriteDraw(float x, float y, float width, float height, float tx, float ty, float tw, float th, float rot, float wi, float he)
 {
 	//頂点バッファにデータを設定
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -37,16 +37,16 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 
 	//マッピングしたバッファにデータを設定
 	Vertex* v = (Vertex*)msr.pData; //マッピングしたバッファのポインタを取得
-	
-	v[0].position = { -width/2,-height/2,  0.0f }; //左上
-	v[1].position = { width/2, -height/ 2,  0.0f }; //右上
-	v[2].position = { -width/2,height /2   ,0.0f }; //左下
-	v[3].position = { width/2, height/2,0.0f }; //右下
+
+	v[0].position = { -width / 2,-height / 2,  0.0f }; //左上
+	v[1].position = { width / 2, -height / 2,  0.0f }; //右上
+	v[2].position = { -width / 2,height / 2   ,0.0f }; //左下
+	v[3].position = { width / 2, height / 2,0.0f }; //右下
 
 
-	v[0].texcoord = { tx,ty}; //左上
-	v[1].texcoord = { tx+tw,ty }; //右上
-	v[2].texcoord = { tx,ty+th }; //左下
+	v[0].texcoord = { tx,ty }; //左上
+	v[1].texcoord = { tx + tw,ty }; //右上
+	v[2].texcoord = { tx,ty + th }; //左下
 	v[3].texcoord = { tx + tw,ty + th }; //右下
 
 	DirectXGetDeviceContext()->Unmap(g_VertexBuffer, 0); //バッファのアンマッピング
@@ -54,30 +54,38 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 	//シェーダー設定
 	Shader_Begin();
 
-	//シェーダー設定マトリクス
-	XMMATRIX matrix = XMMatrixIdentity(); //単位行列を作成
+	/////////////////////////
+	////シェーダー設定マトリクス
+	//XMMATRIX matrix = XMMatrixIdentity(); //単位行列を作成
+	
+	//頂点シェーダーに変換行列を設定
+	MATRIX matrix;
+	matrix.World = XMMatrixIdentity();
+	matrix.Matrix = XMMatrixIdentity();
 
 
-//	if (rot != 0.0f) //回転がある場合
-	{
-		//頂点シェーダーに変換行列を設定
-		MATRIX matrix;
+	matrix.Matrix *= XMMatrixScaling(wi, he, 1.0f); //拡大縮小
 
-		matrix.World = XMMatrixIdentity();
-		matrix.Matrix = XMMatrixIdentity();
+	matrix.Matrix *= XMMatrixRotationZ(rot); //回転
+
+	matrix.Matrix *= XMMatrixTranslation(x, y, 0.0f); //移動
+	matrix.Matrix = matrix.World;
+	
 
 
-		matrix.World *= XMMatrixScaling(wi, he, 1.0f); //拡大縮小
+	////////////
+	
 
-		matrix.World *= XMMatrixRotationZ(rot); //回転
 
-		matrix.World *= XMMatrixTranslation(x, y, 0.0f); //移動
-		matrix.Matrix = matrix.World;
+	//プロジェクしょんマトリクス
+	matrix.Matrix *= XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);; //Z軸を中心に回転
 
-        //プロジェクしょんマトリクス
-		matrix.Matrix *= XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);; //Z軸を中心に回転
-		Shader_SetMatrix(matrix);//単位行列を設定
-	}
+
+	Shader_SetMatrix(matrix);//単位行列を設定
+
+
+
+
 	//matrix.Matrix = matrix.World;
 
 

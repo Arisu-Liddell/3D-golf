@@ -34,15 +34,15 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
 //   outColor.rgb += float3(0.1, 0.1, 0.4); //環境光　anbient light
 //   outColor.rgb = saturate( - dot(LightDirecition, normal));//dot = 内積
     
-    //
+
     if(LightEnable)
     {
         //法線ベクトルの座標返還（回転）
         normal = mul(float4(normal, 0.0), World);
         
         //ランバート拡散照明（直接光）
-        outColor.rgb = saturate(-dot(LightDirecition, normal));
-                        //* float(1.0, 1.0, 0.9); //dot = 内積
+        outColor.rgb = saturate(-dot(LightDirecition, normal))
+                        * float3(1.0, 1.0, 0.9); //dot = 内積
         
         //環境光　anbient light
         outColor.rgb += float3(0.1, 0.1, 0.4); 

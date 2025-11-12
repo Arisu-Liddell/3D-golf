@@ -753,8 +753,7 @@ void CubeDraw(void)
 	DirectXGetDeviceContext()->PSSetShaderResources(0, 1, &texture); //テクスチャの設定
 	for (int a = 0, b = 0; a < 441; a++)
 	{	//頂点シェーダーに変換行列を設定
-		//MATRIX matrix;
-		XMMATRIX matrix = XMMatrixIdentity(); //単位行列を作成
+		MATRIX matrix;
 
 		matrix.World = XMMatrixIdentity();
 		matrix.Matrix = XMMatrixIdentity();
@@ -780,7 +779,6 @@ void CubeDraw(void)
 		//プロジェクションマトリクス
 	//	matrix *= GetCameraProjectionMatrix();
 		matrix.Matrix *= GetCameraProjectionMatrix();
-
 
 		Shader_SetMatrix(matrix);//シェーダーに行列を設定
 		//ポリゴン描画

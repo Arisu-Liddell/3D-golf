@@ -4,10 +4,11 @@
 #include "keyboard.h"
 #include "sprite.h"
 #include "pause.h"
-#include "cube.h"
+//#include "cube.h"
 #include "camera.h"
 #include "ball.h"
 #include "shader.h"
+#include "field.h"	
 
 
 
@@ -19,7 +20,8 @@ void GameInitialize(void)
 	CameraInitialize();
 	PauseInitialize();
 	BallInitialize();
-	CubeInitialize();
+	//CubeInitialize();
+	FieldInitialize();
 
 	ScoreInitialize();
 }
@@ -37,7 +39,8 @@ void GameUpdate(void)
 	//}
 	PauseUpdate();
 	BallUpdate();
-	CubeUpdate();
+	//CubeUpdate();
+	FieldDraw();
 	ScoreUpdate();
 
 }
@@ -52,7 +55,8 @@ void GameDraw(void)
 	Shader_SetLight(light);
 
 	CameraDraw();
-	CubeDraw();
+	//CubeDraw();
+	FieldDraw();
 	BallDraw();
 
 	SetDepthEnable(false);
@@ -65,7 +69,8 @@ void GameDraw(void)
 void GameFinalize(void)
 {
 	CameraDraw();
-	CubeFinalize();
+	//CubeFinalize();
+	FieldFinalize();
 	BallFinalize();
 
 	ScoreFinalize();
