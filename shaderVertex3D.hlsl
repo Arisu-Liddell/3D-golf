@@ -1,7 +1,8 @@
 //定数バッファ
 cbuffer MatrixBuffer : register(b0) //スロット番号0
 {
-    float4x4 mtx; //ワールド行列
+    float4x4 Mtx; //ワールド行列
+    float4x4 World; //ワールド行列
 }
 
 cbuffer LightBuffer : register(b1) //スロット番号1
@@ -31,27 +32,34 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
     
     //ランバート拡散照明
 //   outColor.rgb += float3(0.1, 0.1, 0.4); //環境光　anbient light
-     outColor.a = 1.0;
 //   outColor.rgb = saturate( - dot(LightDirecition, normal));//dot = 内積
     
     //
     if(LightEnable)
     {
-        outColor.rgb = saturate(-dot(LightDirecition, normal)); //dot = 内積
+        //法線ベクトルの座標返還（回転）
+        normal = mul(float4(normal, 0.0), World);
         
-        outColor.rgb += float3(0.1, 0.1, 0.4); //環境光　anbient light
+        //ランバート拡散照明（直接光）
+        outColor.rgb = saturate(-dot(LightDirecition, normal));
+                        //* float(1.0, 1.0, 0.9); //dot = 内積
+        
+        //環境光　anbient light
+        outColor.rgb += float3(0.1, 0.1, 0.4); 
     }
     else
     {
         outColor.rgb = 1.0;
     }
+    
+    outColor.a = 1.0;
     outTexcoord = texcoord;
-    return mul(position, mtx);
+    return mul(position, Mtx);
 }
 
 
 
-//ランバート拡散照明7
+//ランバート拡散照明
 // 
 //明るさ = - L * N
 //             内積 = (cosΘ)

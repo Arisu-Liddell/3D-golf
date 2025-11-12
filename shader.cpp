@@ -157,16 +157,17 @@ void Shader_Finalize()
 	SAFE_RELEASE(g_pVertexShader);
 }
 
-void Shader_SetMatrix(const DirectX::XMMATRIX& matrix)
+void Shader_SetMatrix(const MATRIX& matrix)
 {
 	// 定数バッファ格納用行列の構造体を定義
-	XMFLOAT4X4 transpose;
+	XMFLOAT4X4 transpose[2];
 
 	// 行列を転置して定数バッファ格納用行列に変換
-	XMStoreFloat4x4(&transpose, XMMatrixTranspose(matrix));
+	XMStoreFloat4x4(&transpose[0], XMMatrixTranspose(matrix.Matrix));
+	XMStoreFloat4x4(&transpose[1], XMMatrixTranspose(matrix.World));
 
 	// 定数バッファに行列をセット
-	g_pContext->UpdateSubresource(g_pVSConstantBuffer, 0, nullptr, &transpose, 0, 0);
+	g_pContext->UpdateSubresource(g_pVSConstantBuffer, 0, nullptr, transpose, 0, 0);
 }
 void Shader_SetLight(const LIGHT& light)
 {

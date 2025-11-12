@@ -26,17 +26,41 @@ void BallFinalize(void)
 
 void BallUpdate(void)
 {
-
+	g_Rotation.y += 0.01f;	
 }
 
 void BallDraw(void)
 {
-	XMMATRIX matrix = XMMatrixIdentity(); //単位行列を作成
-	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); //拡大縮小マトリクス
-	matrix *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); //回転マトリクス
-	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z); //移動マトリクス
-	matrix *= GetCameraViewMatrix();//ビューマトリクス
-	matrix *= GetCameraProjectionMatrix();//プロジェクションマトリクス
+	//頂点シェーダーに変換行列を設定
+	MATRIX matrix;
+
+	matrix.World = XMMatrixIdentity(); 
+	matrix.Matrix = XMMatrixIdentity(); 
+
+
+	//拡大縮小マトリクス
+//	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
+	matrix.World *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
+
+	//回転マトリクス
+//	matrix *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); 
+	matrix.World *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); 
+
+	//移動マトリクス
+//	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
+	matrix.World *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
+
+	matrix.Matrix = matrix.World;
+
+//	ビューマトリクス
+//	matrix *= GetCameraViewMatrix();
+	matrix.Matrix *= GetCameraViewMatrix();
+
+	//プロジェクションマトリクス
+//	matrix *= GetCameraProjectionMatrix();
+	matrix.Matrix *= GetCameraProjectionMatrix();
+
+
 	Shader_SetMatrix(matrix);//シェーダーに行列を設定
 	//モデル描画
 	ModelDraw(g_Model);

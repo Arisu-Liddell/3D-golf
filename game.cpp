@@ -35,8 +35,8 @@ void GameUpdate(void)
 	//if (!g_Pause)
 	//{
 	//}
-	PauseDraw();
-	BallDraw();
+	PauseUpdate();
+	BallUpdate();
 	CubeUpdate();
 	ScoreUpdate();
 
@@ -47,8 +47,8 @@ void GameDraw(void)
 	SetDepthEnable(true);
 
 	LIGHT light;
-	//light.LightEnable = TRUE;
-	light.LightDirection = { 0.0f,-1.0f,1.0f };
+	light.LightEnable = TRUE;
+	light.LightDirection = {1.0f,0.0f,0.0f };
 	Shader_SetLight(light);
 
 	CameraDraw();
@@ -57,7 +57,7 @@ void GameDraw(void)
 
 	SetDepthEnable(false);
 
-	//light.LightEnable = FALSE;
+	light.LightEnable = FALSE;
 	ScoreDraw();
 }
 

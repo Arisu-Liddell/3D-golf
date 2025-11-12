@@ -752,13 +752,35 @@ void CubeDraw(void)
 	ID3D11ShaderResourceView* texture = GetTexture(g_Texture); //テクスチャの取得
 	DirectXGetDeviceContext()->PSSetShaderResources(0, 1, &texture); //テクスチャの設定
 	for (int a = 0, b = 0; a < 441; a++)
-	{
+	{	//頂点シェーダーに変換行列を設定
+		//MATRIX matrix;
 		XMMATRIX matrix = XMMatrixIdentity(); //単位行列を作成
-		matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); //拡大縮小マトリクス
-		matrix *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); //回転マトリクス
-		matrix *= XMMatrixTranslation(g_Position[a].x, g_Position[a].y, g_Position[a].z); //移動マトリクス
-		matrix *= GetCameraViewMatrix();//ビューマトリクス
-		matrix *= GetCameraProjectionMatrix();//プロジェクションマトリクス
+
+		matrix.World = XMMatrixIdentity();
+		matrix.Matrix = XMMatrixIdentity();
+
+		//拡大縮小マトリクス
+	//	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
+		matrix.World *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
+
+		//回転マトリクス
+	//	matrix *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); 
+		matrix.World *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z);
+
+		//移動マトリクス
+	//	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
+		matrix.World *= XMMatrixTranslation(g_Position[a].x, g_Position[a].y, g_Position[a].z);
+
+		matrix.Matrix = matrix.World;
+
+		//	ビューマトリクス
+		//	matrix *= GetCameraViewMatrix();
+		matrix.Matrix *= GetCameraViewMatrix();
+
+		//プロジェクションマトリクス
+	//	matrix *= GetCameraProjectionMatrix();
+		matrix.Matrix *= GetCameraProjectionMatrix();
+
 
 		Shader_SetMatrix(matrix);//シェーダーに行列を設定
 		//ポリゴン描画

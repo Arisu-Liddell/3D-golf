@@ -12,6 +12,12 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 
+struct MATRIX
+{
+	XMMATRIX Matrix;
+	XMMATRIX World;//ワールドビュー・プロジェクション行列
+};
+
 struct LIGHT
 {
 	BOOL LightEnable;    // ライトの有効・無効 大文字のBOOL（type def intと同じバイト数)でないとダメ、大文字でないとバイト数が合わない
@@ -24,7 +30,7 @@ struct LIGHT
 bool Shader_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);//シェーダー初期化
 void Shader_Finalize();//シェーダー終了
 
-void Shader_SetMatrix(const DirectX::XMMATRIX& matrix);//行列設定
+void Shader_SetMatrix(const MATRIX& matrix );//行列設定
 void Shader_SetLight(const LIGHT& light);//ライト設定
 void Shader_Begin();//シェーダー開始
 
