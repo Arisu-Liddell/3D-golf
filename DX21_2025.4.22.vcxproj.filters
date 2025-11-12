@@ -126,12 +126,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="shaderPixel2D.hlsl">
-      <Filter>リソースファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="shaderVertex2D.hlsl">
-      <Filter>リソースファイル</Filter>
-    </FxCompile>
     <FxCompile Include="shaderPixel3D.hlsl">
       <Filter>リソースファイル</Filter>
     </FxCompile>
