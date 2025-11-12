@@ -21,10 +21,10 @@ struct MATRIX
 struct LIGHT
 {
 	BOOL LightEnable;    // ライトの有効・無効 大文字のBOOL（type def intと同じバイト数)でないとダメ、大文字でないとバイト数が合わない
-	float Dummy0[3];//きっも
+	float Dummy0[3];
 
 	XMFLOAT3	LightDirection; // ライトの向き
-	float Dummy1;//きっも
+	float Dummy1;
 };
 
 bool Shader_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);//シェーダー初期化
