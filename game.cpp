@@ -51,7 +51,7 @@ void GameDraw(void)
 
 	LIGHT light;
 	light.LightEnable = TRUE;
-	light.LightDirection = {0.0f,0.0f,0.0f };
+	light.LightDirection = { 0.0f,-1.0f,1.0f };
 	Shader_SetLight(light);
 
 	CameraDraw();
