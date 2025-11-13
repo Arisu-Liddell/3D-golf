@@ -732,7 +732,7 @@ void CubeFinalize(void)
 
 void CubeUpdate(void)
 {
-	g_Rotation.y += 0.00f;
+	g_Rotation.y += 0.01f;
 }
 
 //ポリゴン描画
@@ -757,7 +757,7 @@ void CubeDraw(void)
 		MATRIX matrix;
 
 		matrix.World = XMMatrixIdentity();
-		matrix.Matrix = XMMatrixIdentity();
+		matrix.Mtx = XMMatrixIdentity();
 
 		//拡大縮小マトリクス
 	//	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
@@ -771,15 +771,15 @@ void CubeDraw(void)
 	//	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
 		matrix.World *= XMMatrixTranslation(g_Position[a].x, g_Position[a].y, g_Position[a].z);
 
-		matrix.Matrix = matrix.World;
+		matrix.Mtx = matrix.World;
 
 		//	ビューマトリクス
 		//	matrix *= GetCameraViewMatrix();
-		matrix.Matrix *= GetCameraViewMatrix();
+		matrix.Mtx *= GetCameraViewMatrix();
 
 		//プロジェクションマトリクス
 	//	matrix *= GetCameraProjectionMatrix();
-		matrix.Matrix *= GetCameraProjectionMatrix();
+		matrix.Mtx *= GetCameraProjectionMatrix();
 
 		Shader_SetMatrix(matrix);//シェーダーに行列を設定
 		//ポリゴン描画

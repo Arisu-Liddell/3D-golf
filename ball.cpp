@@ -35,7 +35,7 @@ void BallDraw(void)
 	MATRIX matrix;
 
 	matrix.World = XMMatrixIdentity(); 
-	matrix.Matrix = XMMatrixIdentity(); 
+	matrix.Mtx = XMMatrixIdentity(); 
 
 
 	//拡大縮小マトリクス
@@ -50,15 +50,15 @@ void BallDraw(void)
 //	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
 	matrix.World *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
 
-	matrix.Matrix = matrix.World;
+	matrix.Mtx = matrix.World;
 
 //	ビューマトリクス
 //	matrix *= GetCameraViewMatrix();
-	matrix.Matrix *= GetCameraViewMatrix();
+	matrix.Mtx *= GetCameraViewMatrix();
 
 	//プロジェクションマトリクス
 //	matrix *= GetCameraProjectionMatrix();
-	matrix.Matrix *= GetCameraProjectionMatrix();
+	matrix.Mtx *= GetCameraProjectionMatrix();
 
 
 	Shader_SetMatrix(matrix);//シェーダーに行列を設定

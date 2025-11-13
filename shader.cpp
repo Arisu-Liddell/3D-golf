@@ -94,7 +94,8 @@ bool Shader_Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	// 頂点シェーダー用定数バッファの作成
 	D3D11_BUFFER_DESC buffer_desc{};
-	buffer_desc.ByteWidth = sizeof(XMMATRIX); // バッファのサイズ constant
+	//buffer_desc.ByteWidth = sizeof(XMMATRIX);
+	buffer_desc.ByteWidth = sizeof(XMFLOAT4X4)*2; // バッファのサイズ constant
 	buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER; // バインドフラグ
 
 	g_pDevice->CreateBuffer(&buffer_desc, nullptr, &g_pVSConstantBuffer);
@@ -163,7 +164,7 @@ void Shader_SetMatrix(const MATRIX& matrix)
 	XMFLOAT4X4 transpose[2];
 
 	// 行列を転置して定数バッファ格納用行列に変換
-	XMStoreFloat4x4(&transpose[0], XMMatrixTranspose(matrix.Matrix));
+	XMStoreFloat4x4(&transpose[0], XMMatrixTranspose(matrix.Mtx));
 	XMStoreFloat4x4(&transpose[1], XMMatrixTranspose(matrix.World));
 
 	// 定数バッファに行列をセット
