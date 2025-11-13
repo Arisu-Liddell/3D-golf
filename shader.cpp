@@ -187,3 +187,6 @@ void Shader_Begin()
 	g_pContext->VSSetConstantBuffers(0, 1, &g_pVSConstantBuffer);//スロット番号0をに設定
 	g_pContext->VSSetConstantBuffers(1, 1, &g_pVSLightBuffer);//スロット番号を1に設定
 }
+//法線の座標返還　
+//shader.set.matrix
+

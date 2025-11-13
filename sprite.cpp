@@ -55,27 +55,17 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 	Shader_Begin();
 
 	/////////////////////////
-	////シェーダー設定マトリクス
-	//XMMATRIX matrix = XMMatrixIdentity(); //単位行列を作成
-	
-	//頂点シェーダーに変換行列を設定
+	//シェーダー設定マトリクス
 	MATRIX matrix;
-	matrix.World = XMMatrixIdentity();
-	matrix.Matrix = XMMatrixIdentity();
+	matrix.World = XMMatrixIdentity(); //単位行列を作成
+	
 
+	matrix.World *= XMMatrixScaling(wi, he, 1.0f); //拡大縮小
 
-	matrix.Matrix *= XMMatrixScaling(wi, he, 1.0f); //拡大縮小
+	matrix.World *= XMMatrixRotationZ(rot); //回転
 
-	matrix.Matrix *= XMMatrixRotationZ(rot); //回転
-
-	matrix.Matrix *= XMMatrixTranslation(x, y, 0.0f); //移動
+	matrix.World *= XMMatrixTranslation(x, y, 0.0f); //移動
 	matrix.Matrix = matrix.World;
-	
-
-
-	////////////
-	
-
 
 	//プロジェクしょんマトリクス
 	matrix.Matrix *= XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.0f, 1.0f);; //Z軸を中心に回転
@@ -85,9 +75,7 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 
 
 
-
 	//matrix.Matrix = matrix.World;
-
 
 //	Shader_SetMatrix(XMMatrixOrthographicOffCenterLH(0.0f, 1600.0f, 900.0f, 0.0f, 0.0f, 1.0f));//単位行列を設定
 
