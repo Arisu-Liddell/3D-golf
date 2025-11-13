@@ -36,7 +36,7 @@ void BallDraw(void)
 
 	matrix.World = XMMatrixIdentity(); 
 	matrix.Mtx = XMMatrixIdentity(); 
-
+	//Mtx = Matrix ?
 
 	//拡大縮小マトリクス
 //	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 

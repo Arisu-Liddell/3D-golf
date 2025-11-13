@@ -14,7 +14,7 @@
 
 struct MATRIX
 {
-	XMMATRIX Mtx;
+	XMMATRIX Mtx;//Matrix
 	XMMATRIX World;//ワールドビュー・プロジェクション行列
 };
 
