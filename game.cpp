@@ -57,7 +57,6 @@ void GameDraw(void)
 	SetDepthEnable(true);
 	light.LightEnable = TRUE;
 	//light.LightDirection = { 0.0f,-1.0f,0.0f };
-
 	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };
 	direction = XMVector3Normalize(direction);//　正規化する関数
 	XMStoreFloat3(&light.LightDirection, direction);

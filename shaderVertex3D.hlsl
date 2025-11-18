@@ -46,11 +46,12 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
         
         //環境光　anbient light
         outColor.rgb += float3(0.1, 0.1, 0.4); 
- //       outColor.rgb += float3(1.0, 1.0, 1.0);
+
     }
     else
     {
         outColor.rgb = 1.0;
+        //outColor.rgb += float3(1.0, 1.0, 1.0);
     }
     
     outColor.a = 1.0;
