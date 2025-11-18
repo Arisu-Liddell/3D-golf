@@ -1,14 +1,15 @@
-#include "directx.h"
+﻿#include "directx.h"
 #include "game.h"
 #include "score.h"
 #include "keyboard.h"
 #include "sprite.h"
 #include "pause.h"
-//#include "cube.h"
+#include "cube.h"
 #include "camera.h"
-#include "ball.h"
+//#include "ball.h"
 #include "shader.h"
 #include "field.h"	
+#include "Background.h"
 
 
 
@@ -19,10 +20,11 @@ void GameInitialize(void)
 {
 	CameraInitialize();
 	PauseInitialize();
-	BallInitialize();
+	//BallInitialize();
 	//CubeInitialize();
+	InitPositions();
 	FieldInitialize();
-
+	BackgroundInitialize();
 	ScoreInitialize();
 }
 
@@ -38,40 +40,50 @@ void GameUpdate(void)
 	//{
 	//}
 	PauseUpdate();
-	BallUpdate();
+	//BallUpdate();
 	//CubeUpdate();
-	FieldDraw();
+	FieldUpdate();
+	BackgroundUpdate();
 	ScoreUpdate();
 
 }
 
 void GameDraw(void)
 {
-	SetDepthEnable(true);
 
 	LIGHT light;
+	light.LightEnable = FALSE;
+	BackgroundDraw();
+	SetDepthEnable(true);
 	light.LightEnable = TRUE;
-	light.LightDirection = { 0.0f,-1.0f,1.0f };
+	//light.LightDirection = { 0.0f,-1.0f,0.0f };
+
+	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };
+	direction = XMVector3Normalize(direction);//　正規化する関数
+	XMStoreFloat3(&light.LightDirection, direction);
+
 	Shader_SetLight(light);
 
+	
 	CameraDraw();
 	//CubeDraw();
 	FieldDraw();
-	BallDraw();
+	//BallDraw();
 
 	SetDepthEnable(false);
 
 	light.LightEnable = FALSE;
-	ScoreDraw();
+	ScoreDraw();;
 }
 
 
 void GameFinalize(void)
 {
-	CameraDraw();
+	BackgroundFinalize();
+	CameraFinalize();
 	//CubeFinalize();
 	FieldFinalize();
-	BallFinalize();
+	//BallFinalize();
 
 	ScoreFinalize();
 }

@@ -65,6 +65,7 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 	matrix.World *= XMMatrixRotationZ(rot); //回転
 
 	matrix.World *= XMMatrixTranslation(x, y, 0.0f); //移動
+
 	matrix.Mtx = matrix.World;
 
 	//プロジェクしょんマトリクス
@@ -73,9 +74,6 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 
 	Shader_SetMatrix(matrix);//単位行列を設定
 
-
-
-	//matrix.Matrix = matrix.World;
 
 //	Shader_SetMatrix(XMMatrixOrthographicOffCenterLH(0.0f, 1600.0f, 900.0f, 0.0f, 0.0f, 1.0f));//単位行列を設定
 

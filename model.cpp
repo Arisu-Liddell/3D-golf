@@ -15,6 +15,8 @@ MODEL* ModelLoad( const char *FileName)
 	const std::string modelPath( FileName );
 
 	model->AiScene = aiImportFile(FileName, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_ConvertToLeftHanded);
+	
+
 	assert(model->AiScene);
 
 	model->VertexBuffer = new ID3D11Buffer*[model->AiScene->mNumMeshes];

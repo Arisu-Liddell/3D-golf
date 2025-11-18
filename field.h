@@ -1,5 +1,6 @@
 #pragma once
 
+void InitPositions(void);
 void FieldInitialize(void);//ポリゴン初期化
 void FieldFinalize(void);//ポリゴン終了
 void FieldUpdate(void);//ポリゴン更新
