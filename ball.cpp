@@ -14,6 +14,11 @@ static XMFLOAT3 g_Velocity;//‘¬“x
 
 void BallHitCheck(void);
 
+XMFLOAT3 GetBallPosition(void)
+{
+	return g_Position;
+}
+
 void BallInitialize(void)
 {
 	g_Model = ModelLoad("asset\\model\\ball.fbx");
