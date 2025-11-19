@@ -31,9 +31,9 @@ void CameraFinalize(void)//ポリゴン終了
 void CameraUpdate(void)//ポリゴン更新
 {
 	XMFLOAT3 BallTarget = GetBallPosition();
-	g_Target.x += (BallTarget.x - BallTarget.x) * 0.1f;
-	g_Target.y += (BallTarget.y - BallTarget.y) * 0.1f;
-	g_Target.z += (BallTarget.z - BallTarget.z) * 0.1f;
+	g_Target.x += (BallTarget.x - g_Target.x) * 0.1f;
+	g_Target.y += (BallTarget.y - g_Target.y) * 0.1f;
+	g_Target.z += (BallTarget.z - g_Target.z) * 0.1f;
 
 	if (Keyboard_IsKeyDown(KK_RIGHT))
 	{
