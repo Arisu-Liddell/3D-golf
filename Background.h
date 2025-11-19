@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 void BackgroundInitialize(void);//ƒ|ƒŠƒSƒ“‰Šú‰»
 void BackgroundFinalize(void);//ƒ|ƒŠƒSƒ“I—¹
