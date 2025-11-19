@@ -30,14 +30,14 @@ void CameraFinalize(void)//ポリゴン終了
 }
 void CameraUpdate(void)//ポリゴン更新
 {
-	if (Keyboard_IsKeyDown(KK_A))
-	{
-		g_Target.x -= 1.0f;
-	}
-	if (Keyboard_IsKeyDown(KK_D))
-	{
-		g_Target.x += 1.0f;
-	}
+	//if (Keyboard_IsKeyDown(KK_A))
+	//{
+	//	g_Target.x -= 1.0f;
+	//}
+	//if (Keyboard_IsKeyDown(KK_D))
+	//{
+	//	g_Target.x += 1.0f;
+	//}
 	if (Keyboard_IsKeyDown(KK_UP))
 	{
 		g_Target.y += 1.0f;

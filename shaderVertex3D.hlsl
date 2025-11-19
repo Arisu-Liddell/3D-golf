@@ -45,7 +45,7 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
                         * float3(1.0, 1.0, 0.9); //dot = 内積
         
         //環境光　anbient light
-        outColor.rgb += float3(0.1, 0.1, 0.4); 
+        outColor.rgb += float3(0.3, 0.3, 0.4); 
 
     }
     else

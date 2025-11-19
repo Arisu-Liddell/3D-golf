@@ -6,7 +6,7 @@
 #include "pause.h"
 #include "cube.h"
 #include "camera.h"
-//#include "ball.h"
+#include "ball.h"
 #include "shader.h"
 #include "field.h"	
 #include "Background.h"
@@ -20,7 +20,7 @@ void GameInitialize(void)
 {
 	CameraInitialize();
 	PauseInitialize();
-	//BallInitialize();
+	BallInitialize();
 	//CubeInitialize();
 	InitPositions();
 	FieldInitialize();
@@ -32,15 +32,8 @@ void GameInitialize(void)
 void GameUpdate(void)
 {
 	CameraUpdate();
-	//if (Keyboard_IsKeyTrigger(KK_ESCAPE))
-	//{
-	//	g_Pause = !g_Pause;
-	//}
-	//if (!g_Pause)
-	//{
-	//}
 	PauseUpdate();
-	//BallUpdate();
+	BallUpdate();
 	//CubeUpdate();
 	FieldUpdate();
 	BackgroundUpdate();
@@ -54,6 +47,7 @@ void GameDraw(void)
 	LIGHT light;
 	SetDepthEnable(true);
 	light.LightEnable = FALSE;
+	//BackgroundDraw();
 	light.LightEnable = TRUE;
 	//light.LightDirection = { 0.0f,-1.0f,0.0f };
 	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };
@@ -66,13 +60,12 @@ void GameDraw(void)
 	CameraDraw();
 	//CubeDraw();
 	FieldDraw();
-	//BallDraw();
+	BallDraw();
 
 	SetDepthEnable(false);
 
 	light.LightEnable = FALSE;
 	ScoreDraw();;
-	BackgroundDraw();
 }
 
 
@@ -82,7 +75,7 @@ void GameFinalize(void)
 	CameraFinalize();
 	//CubeFinalize();
 	FieldFinalize();
-	//BallFinalize();
+	BallFinalize();
 
 	ScoreFinalize();
 }
