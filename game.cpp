@@ -43,11 +43,11 @@ void GameUpdate(void)
 
 void GameDraw(void)
 {
+	BackgroundDraw();
+	SetDepthEnable(true);
 
 	LIGHT light;
 	SetDepthEnable(true);
-	light.LightEnable = FALSE;
-	//BackgroundDraw();
 	light.LightEnable = TRUE;
 	//light.LightDirection = { 0.0f,-1.0f,0.0f };
 	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };

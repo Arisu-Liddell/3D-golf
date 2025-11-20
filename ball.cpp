@@ -11,6 +11,7 @@ static MODEL* g_Model = NULL;
 static XMFLOAT3 g_Position;//位置
 static XMFLOAT3 g_Rotation;//回転
 static XMFLOAT3 g_Velocity;//速度
+static float dt = 1.0f / 60.0f;
 
 void BallHitCheck(void);
 
@@ -35,49 +36,55 @@ void BallFinalize(void)
 
 void BallUpdate(void)
 {
-	float dt = 1.0f / 60.0f;
-	g_Rotation.y += 0.01f;
-	if (Keyboard_IsKeyDown(KK_A))
-	{
 
-		g_Velocity.x -= 5.0f * dt;
+	//XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
 
-	}
-	if (Keyboard_IsKeyDown(KK_D))
-	{
+	//cameraforward.y = 0.0f;
 
+	////ベクトルの長さ
+	//float length = sqrtf(cameraforward.x * cameraforward.x
+	//	+ cameraforward.y * cameraforward.y
+	//	+ cameraforward.z * cameraforward.z);
 
-		g_Velocity.x += 5.0f * dt;
-
-	}
-	if (Keyboard_IsKeyDown(KK_W))
-	{
-
-		g_Velocity.z += 5.0f * dt;
-
-	}
-	if (Keyboard_IsKeyDown(KK_S))
-	{
-
-		g_Velocity.z -= 5.0f * dt;
-
-	}
+	////正規化
+	//cameraforward.x /= length;
+	//cameraforward.y /= length;
+	//cameraforward.z /= length;
 
 
-
+	//if (Keyboard_IsKeyDown(KK_A))
+	//{
+	//	g_Velocity.x -= 10.0f * dt;
+	//}
+	//if (Keyboard_IsKeyDown(KK_D))
+	//{
+	//	g_Velocity.x += 10.0f * dt;
+	//}
+	//if (Keyboard_IsKeyDown(KK_W))
+	//{
+	//	g_Velocity.z += 10.0f * dt;
+	//}
+	//if (Keyboard_IsKeyDown(KK_S))
+	//{
+	//	g_Velocity.z -= 10.0f * dt;
+	//}
+	
 	//重力
 	g_Velocity.y -= 9.8f * dt;
 	//摩擦
-	g_Velocity.x -= g_Velocity.x * 2.0f * dt;
+	//g_Velocity.x -= g_Velocity.x * 2.0f * dt;
+	//g_Velocity.z -= g_Velocity.z * 2.0f * dt;
 	g_Velocity.y -= g_Velocity.y * 0.1f * dt;
-	g_Velocity.z -= g_Velocity.z * 2.0f * dt;
+
+
 	//移動
 	g_Position.x += g_Velocity.x * dt;
-	g_Position.y += g_Velocity.y * dt;
 	g_Position.z += g_Velocity.z * dt;
+	g_Position.y += g_Velocity.y * dt;
 
 	//当たり判定
 	BallHitCheck();
+	//カメラ向き
 }
 
 void BallDraw(void)
@@ -119,6 +126,19 @@ void BallDraw(void)
 
 void BallHitCheck(void)
 {
+	XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
+
+	cameraforward.y = 0.0f;
+	//ベクトルの長さ
+	float length = sqrtf(cameraforward.x * cameraforward.x
+		+ cameraforward.y * cameraforward.y
+		+ cameraforward.z * cameraforward.z);
+
+	//正規化
+	cameraforward.x /= length;
+	cameraforward.y /= length;
+	cameraforward.z /= length;
+
 	BLOCK * block = GetFieldBlock();
 	BLOCK * item = GetFieldItem();
 
@@ -126,19 +146,19 @@ void BallHitCheck(void)
 	float ballRadius = 0.2f;
 	float e = 0.5f;
 
-	for (int i= 0; i < GridCount; i++)
+	for (int i = 0; i < GridCount; i++)
 	{
 		if (block[i].Position.y - blockRadius < g_Position.y &&
 			g_Position.y < block[i].Position.y + blockRadius)
 		{
 			//横方向
-			if(block[i].Position.z - blockRadius < g_Position.z &&
+			if (block[i].Position.z - blockRadius < g_Position.z &&
 				g_Position.z < block[i].Position.z + blockRadius)
 			{
 				if (block[i].Position.x - blockRadius < g_Position.x + ballRadius &&
 					g_Position.x - ballRadius < block[i].Position.x + blockRadius)
 				{
-					if(block[i].Position.x < g_Position.x)
+					if (block[i].Position.x < g_Position.x)
 					{
 						//右側から衝突
 						g_Position.x = block[i].Position.x + blockRadius + ballRadius;
@@ -148,10 +168,11 @@ void BallHitCheck(void)
 						//左側から衝突
 						g_Position.x = block[i].Position.x - blockRadius - ballRadius;
 					}
+					//g_Velocity.x -= g_Velocity.x * 2.0f * dt;
 					g_Velocity.x *= -0.5;//反発係数
 				}
 			}
-			else if(block[i].Position.x - blockRadius < g_Position.x &&
+			else if (block[i].Position.x - blockRadius < g_Position.x &&
 				g_Position.x < block[i].Position.x + blockRadius)
 			{
 				//Z方向
@@ -193,12 +214,38 @@ void BallHitCheck(void)
 							g_Position.y = block[i].Position.y - blockRadius - ballRadius;
 						}
 						g_Velocity.y *= -0.5f;//反発係数
+						if (Keyboard_IsKeyDown(KK_A))
+						{
+							//g_Velocity.x -= 10.0f * dt;
+							g_Velocity.x -= cameraforward.z * 10.0f * dt;
+							g_Velocity.z += cameraforward.x * 10.0f * dt;
+						}
+						if (Keyboard_IsKeyDown(KK_D))
+						{
+							//g_Velocity.x += 10.0f * dt;
+							g_Velocity.x += cameraforward.z * 10.0f * dt;
+							g_Velocity.z -= cameraforward.x * 10.0f * dt;
+						}
+						if (Keyboard_IsKeyDown(KK_W))
+						{
+							//g_Velocity.z += 10.0f * dt;
+							g_Velocity.x += cameraforward.x * 10.0f * dt;
+							g_Velocity.z += cameraforward.z * 10.0f * dt;
+						}
+						if (Keyboard_IsKeyDown(KK_S))
+						{
+							//g_Velocity.z -= 10.0f * dt;
+							g_Velocity.x -= cameraforward.x * 10.0f * dt;
+							g_Velocity.z -= cameraforward.z * 10.0f * dt;
+						}
 						if (Keyboard_IsKeyTrigger(KK_SPACE))
 						{
 							//ジャンプ
 							g_Velocity.y += 7.0f;
-
 						}
+						//接地摩擦
+						g_Velocity.z -= g_Velocity.z * 2.0f * dt;
+						g_Velocity.x -= g_Velocity.x * 2.0f * dt;
 					}
 				}
 			}

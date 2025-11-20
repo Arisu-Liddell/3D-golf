@@ -17,6 +17,17 @@ XMMATRIX GetCameraProjectionMatrix(void)
 {
 	return g_ProjectionMatrix;
 }
+//カメラ向き
+XMFLOAT3 GetCameraForward(void)
+{
+	XMFLOAT3 forward;
+
+	forward.x = g_Target.x - g_Position.x;
+	forward.y = g_Target.y - g_Position.y;
+	forward.z = g_Target.z - g_Position.z;
+
+	return forward;
+}
 
 void CameraInitialize(void)//ポリゴン初期化
 {
@@ -37,12 +48,22 @@ void CameraUpdate(void)//ポリゴン更新
 
 	if (Keyboard_IsKeyDown(KK_RIGHT))
 	{
-		g_Rotation.y += 0.1f;
+		g_Rotation.y -= 0.1f;
 	}
 	if (Keyboard_IsKeyDown(KK_LEFT))
 	{
-		g_Rotation.y -= 0.1f;
+		g_Rotation.y += 0.1f;
 	}
+
+	//if (Keyboard_IsKeyDown(KK_UP))
+	//{
+	//	g_Target.y += 0.1f;
+	//}
+	//if (Keyboard_IsKeyDown(KK_DOWN))
+	//{
+	//	g_Target.y -= 0.1f;
+	//}
+
 	g_Position.x = g_Target.x + sinf(g_Rotation.y) * 3.0f;
 	g_Position.z = g_Target.z - cosf(g_Rotation.y) * 3.0f;
 	//sin cosを逆にすると90.逆になる　横基準ではなく奥行き基準で
@@ -58,3 +79,4 @@ void CameraDraw(void)//ポリゴン描画
 	//プロジェクションマトリクス
 	g_ProjectionMatrix = XMMatrixPerspectiveFovLH(1.0f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f);
 }
+//g_Target 
