@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include "main.h"
 #include "keyboard.h"
+#include <iostream>
 
 
 static int g_Texture;
@@ -59,3 +60,9 @@ void TitleDraw(void)
 				0.0f, 0.0f, 1.0f, 1.0f);
 }
 
+
+
+void InitDirectX()
+{
+	std::cout << "[DX] placeholder" << std::endl;
+}

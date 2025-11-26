@@ -9,6 +9,7 @@
 #include "ball.h"
 #include "shader.h"
 #include "field.h"	
+#include "goal.h"
 #include "Background.h"
 
 
@@ -22,8 +23,8 @@ void GameInitialize(void)
 	PauseInitialize();
 	BallInitialize();
 	//CubeInitialize();
-	InitPositions();
 	FieldInitialize();
+	GoalInitialize();
 	BackgroundInitialize();
 	ScoreInitialize();
 }
@@ -36,6 +37,7 @@ void GameUpdate(void)
 	BallUpdate();
 	//CubeUpdate();
 	FieldUpdate();
+	GoalUpdate();
 	BackgroundUpdate();
 	ScoreUpdate();
 
@@ -43,28 +45,27 @@ void GameUpdate(void)
 
 void GameDraw(void)
 {
-	BackgroundDraw();
-	SetDepthEnable(true);
+	//BackgroundDraw();
 
 	LIGHT light;
-	SetDepthEnable(true);
-	light.LightEnable = TRUE;
 	//light.LightDirection = { 0.0f,-1.0f,0.0f };
 	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };
 	direction = XMVector3Normalize(direction);//　正規化する関数
 	XMStoreFloat3(&light.LightDirection, direction);
 
-	Shader_SetLight(light);
-
+	Shader_SetLight(light);//ライト設定
+	SetDepthEnable(true);//Zバッファ有効化
+	light.LightEnable = TRUE;
 	
 	CameraDraw();
 	//CubeDraw();
 	FieldDraw();
 	BallDraw();
-
-	SetDepthEnable(false);
+	GoalDraw();
 
 	light.LightEnable = FALSE;
+	SetDepthEnable(false);//
+
 	ScoreDraw();;
 }
 
@@ -73,6 +74,7 @@ void GameFinalize(void)
 {
 	BackgroundFinalize();
 	CameraFinalize();
+	GoalFinalize();
 	//CubeFinalize();
 	FieldFinalize();
 	BallFinalize();

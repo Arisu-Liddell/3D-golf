@@ -39,7 +39,7 @@ void FieldInitialize(void)
 
 	g_Model[0] = ModelLoad("asset\\model\\cube.fbx");
 	g_Model[1] = ModelLoad("asset\\model\\tree.fbx");
-	g_Model[2] = ModelLoad("asset\\model\\ball.fbx");
+//	g_Model[2] = ModelLoad("asset\\model\\ball.fbx");
 //	g_Model[3] = ModelLoad("asset\\model\\Bear_Normal.fbx");
 
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//回転初期化
@@ -49,7 +49,7 @@ void FieldFinalize(void)
 {
 	ModelRelease(g_Model[0]);
 	ModelRelease(g_Model[1]);
-	ModelRelease(g_Model[2]);
+//	ModelRelease(g_Model[2]);
 //	ModelRelease(g_Model[3]);
 
 }
@@ -61,6 +61,7 @@ void FieldUpdate(void)
 
 void FieldDraw(void)
 {
+	InitPositions();
 	for (int i = 0; i < GridCount; i++)
 	{
 		//頂点シェーダーに変換行列を設定
@@ -97,6 +98,7 @@ void FieldDraw(void)
 		//足場モデル描画
 		ModelDraw(g_Model[g_Block[i].Type]);
 	}
+
 	for (int i = 0; i < ItemCount; i++)
 	{
 		//頂点シェーダーに変換行列を設定

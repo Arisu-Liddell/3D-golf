@@ -138,6 +138,7 @@
     <ClCompile Include="directx.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="goal.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="model.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="directx.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="goal.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="model.h" />
@@ -195,6 +197,9 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="assimp-vc143-mt.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="FileName.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

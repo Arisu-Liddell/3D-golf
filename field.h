@@ -8,7 +8,7 @@ constexpr int GridMaxZ = 20;
 constexpr int GridWidth = GridMaxX - GridMinX + 1;     // 21
 constexpr int GridHeight = GridMaxZ - GridMinZ + 1;     // 21
 constexpr int GridCount = GridWidth * GridHeight;      // 441
-constexpr int ItemCount = 60;
+constexpr int ItemCount = 59;
 
 struct BLOCK
 {
@@ -30,7 +30,6 @@ static BLOCK g_Item[ItemCount] =
 	{{1.0f,		1.0f,	20.0f},	1},
 	{{-1.0f,	1.0f,	20.0f},	1},
 	{{0.0f,		2.0f,	10.0f},	1},
-
 	{{10.0f,	1.0f,	1.0f},	0},
 	{{10.0f,	1.0f,	2.0f},	0},
 	{{10.0f,	1.0f,	3.0f},	0},
@@ -51,7 +50,6 @@ static BLOCK g_Item[ItemCount] =
 	{{10.0f,	1.0f,	18.0f},	0},
 	{{10.0f,	1.0f,	19.0f},	0},
 	{{10.0f,	1.0f,	20.0f},	0},//31
-
 	{{-10.0f,	1.0f,	0.0f},	0},//32
 	{{-10.0f,	1.0f,	1.0f},	0},
 	{{-10.0f,	1.0f,	2.0f},	0},
@@ -73,7 +71,6 @@ static BLOCK g_Item[ItemCount] =
 	{{-10.0f,	1.0f,	18.0f},	0},
 	{{-10.0f,	1.0f,	19.0f},	0},
 	{{-10.0f,	1.0f,	20.0f},	0},
-
 	{{00.0f,	1.0f,	7.0f},	0},
 	{{00.0f,	1.0f,	8.0f},	0},
 	{{00.0f,	1.0f,	9.0f},	0},
@@ -81,8 +78,6 @@ static BLOCK g_Item[ItemCount] =
 	{{00.0f,	1.0f,	11.0f},	0},
 	{{00.0f,	1.0f,	12.0f},	0},//58
 	{{00.0f,	2.0f,	5.0f},	0},
-	//	{{00.0f,	2.0f,	7.0f},	3},
-	//	{{00.0f,	2.0f,	0.0f},	4},
 };
 
 BLOCK* GetFieldBlock(void);
