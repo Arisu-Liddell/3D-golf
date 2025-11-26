@@ -6,6 +6,7 @@
 #include "ball.h"
 #include "field.h"
 #include "goal.h"
+#include "main.h"
 
 static MODEL* g_Model = NULL;
 
@@ -37,53 +38,61 @@ void BallFinalize(void)
 
 void BallUpdate(void)
 {
-	//XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
+	XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
+	XMFLOAT3 force = { 0.0f,0.0f,0.0f };//力ベクトル初期化
 
-	//cameraforward.y = 0.0f;
-	//XMFLOAT3 force = { 0.0f,0.0f,0.0f };
+	cameraforward.y = 0.0f;//y成分を0にする
+	//ベクトルの長さ
+	float length = sqrtf(cameraforward.x * cameraforward.x
+		+ cameraforward.y * cameraforward.y
+		+ cameraforward.z * cameraforward.z);
+	//正規化
+	cameraforward.x /= length;
+	cameraforward.y /= length;
+	cameraforward.z /= length;
 
-	////ベクトルの長さ
-	//float length = sqrtf(cameraforward.x * cameraforward.x
-	//	+ cameraforward.y * cameraforward.y
-	//	+ cameraforward.z * cameraforward.z);
-
-	////正規化
-	//cameraforward.x /= length;
-	//cameraforward.y /= length;
-	//cameraforward.z /= length;
-
-	//XMFLOAT3 force = {0.0f,0.0f,0.0f};
-
-	//if (Keyboard_IsKeyDown(KK_A))
-	//{
-	//	g_Velocity.x -= 10.0f * dt;
-	//}
-	//if (Keyboard_IsKeyDown(KK_D))
-	//{
-	//	g_Velocity.x += 10.0f * dt;
-	//}
-	//if (Keyboard_IsKeyDown(KK_W))
-	//{
-	//	g_Velocity.z += 10.0f * dt;
-	//}
-	//if (Keyboard_IsKeyDown(KK_S))
-	//{
-	//	g_Velocity.z -= 10.0f * dt;
-	//}
+	//移動入力
+	if (Keyboard_IsKeyDown(KK_A))
+	{
+		force.x -= cameraforward.z;
+		force.z += cameraforward.x;
+	}
+	if (Keyboard_IsKeyDown(KK_D))
+	{
+		force.x += cameraforward.z;
+		force.z -= cameraforward.x;
+	}
+	if (Keyboard_IsKeyDown(KK_W))
+	{
+		force.x += cameraforward.x;
+		force.z += cameraforward.z;
+	}
+	if (Keyboard_IsKeyDown(KK_S))
+	{
+		force.x -= cameraforward.x;
+		force.z -= cameraforward.z;
+	}
+	if (Keyboard_IsKeyTrigger(KK_SPACE))
+	{
+		//ジャンプ
+		g_Velocity.y += 7.0f;
+	}
 	
 
 	//ベクトルの長さ
-	//float forcelength = sqrtf(force.x * force.x
-	//	+ force.y * force.y
-	//	+ force.z * force.z);
-
-	//if (forcelength > 1.0f)
-	//{
-	//	//正規化
-	//	force.x /= forcelength;
-	//	force.y /= forcelength;
-	//	force.z /= forcelength;
-	//}
+	float forcelength = sqrtf(force.x * force.x
+		+ force.y * force.y
+		+ force.z * force.z);
+	//正規化
+	if (forcelength > 1.0f)
+	{
+		force.x /= forcelength;
+		force.y /= forcelength;
+		force.z /= forcelength;
+	}
+	//力を速度に変換
+	g_Velocity.x += force.x * 10.0f * dt;
+	g_Velocity.z += force.z * 10.0f * dt;
 
 	//重力
 	g_Velocity.y -= 9.8f * dt;
@@ -91,7 +100,6 @@ void BallUpdate(void)
 	g_Velocity.x -= g_Velocity.x * 2.0f * dt;
 	g_Velocity.z -= g_Velocity.z * 2.0f * dt;
 	g_Velocity.y -= g_Velocity.y * 0.1f * dt;
-
 	//移動
 	g_Position.x += g_Velocity.x * dt;
 	g_Position.z += g_Velocity.z * dt;
@@ -99,7 +107,7 @@ void BallUpdate(void)
 
 	//当たり判定
 	BallHitCheck();
-
+	
 	//ゴール衝突判定
 	XMFLOAT3 gorlPosition = GetGoalPosition();
 	XMFLOAT3 direction;
@@ -114,7 +122,8 @@ void BallUpdate(void)
 
 	if (GoalLength < 1.0f)
 	{
-		//リザルト画面遷移
+		//リザルト画面遷移	
+		SetScene(SCENE_RESULT);
 	}
 
 	//リスポーン
@@ -164,17 +173,17 @@ void BallDraw(void)
 
 void BallHitCheck(void)
 {
-	XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
-	cameraforward.y = 0.0f;
-	//ベクトルの長さ
-	float length = sqrtf(cameraforward.x * cameraforward.x
-		+ cameraforward.y * cameraforward.y
-		+ cameraforward.z * cameraforward.z);
+	//XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
+	//cameraforward.y = 0.0f;
+	////ベクトルの長さ
+	//float length = sqrtf(cameraforward.x * cameraforward.x
+	//	+ cameraforward.y * cameraforward.y
+	//	+ cameraforward.z * cameraforward.z);
 
-	//正規化
-	cameraforward.x /= length;
-	cameraforward.y /= length;
-	cameraforward.z /= length;
+	////正規化
+	//cameraforward.x /= length;
+	//cameraforward.y /= length;
+	//cameraforward.z /= length;
 
 	BLOCK* block = GetFieldBlock();
 	BLOCK* item = GetFieldItem();
@@ -250,51 +259,7 @@ void BallHitCheck(void)
 						{
 							g_Position.y = block[i].Position.y - collitionRadius - ballRadius;
 						}
-						if (Keyboard_IsKeyDown(KK_A))
-						{
-							g_Velocity.x -= cameraforward.z * 10.0f * dt;
-							g_Velocity.z += cameraforward.x * 10.0f * dt;
-						}
-						if (Keyboard_IsKeyDown(KK_D))
-						{
-							g_Velocity.x += cameraforward.z * 10.0f * dt;
-							g_Velocity.z -= cameraforward.x * 10.0f * dt;
-						}
-						if (Keyboard_IsKeyDown(KK_W))
-						{
-							g_Velocity.x += cameraforward.x * 10.0f * dt;
-							g_Velocity.z += cameraforward.z * 10.0f * dt;
-						}
-						if (Keyboard_IsKeyDown(KK_S))
-						{
-							g_Velocity.x -= cameraforward.x * 10.0f * dt;
-							g_Velocity.z -= cameraforward.z * 10.0f * dt;
-						}
-						////ベクトルの長さ
-						//float forcelength = sqrtf(force.x * force.x
-						//	+ force.y * force.y
-						//	+ force.z * force.z);
-
-						//if (forcelength > 1.0f)
-						//{
-						//	//正規化
-						//	force.x /= forcelength;
-						//	force.z /= forcelength;
-						//}
-						
-						//g_Velocity.x -= g_Velocity.x * 3.0f * dt;
-						//g_Velocity.z -= g_Velocity.z * 3.0f * dt;
-
-						//接地摩擦
-						//g_Velocity.x -= g_Velocity.x * 3.0f * dt;
-						//g_Velocity.z -= g_Velocity.z * 3.0f * dt;
-
 						g_Velocity.y *= -0.7f;//反発係数
-						if (Keyboard_IsKeyTrigger(KK_SPACE))
-						{
-							//ジャンプ
-							g_Velocity.y += 7.0f;
-						}
 					}
 				}
 			}
@@ -367,52 +332,7 @@ void BallHitCheck(void)
 						{
 							g_Position.y = item[x].Position.y - collitionRadius - ballRadius;
 						}
-						if (Keyboard_IsKeyDown(KK_A))
-						{
-							//g_Velocity.x -= 10.0f * dt;
-							g_Velocity.x -= cameraforward.z * 5.0f * dt;
-							g_Velocity.z += cameraforward.x * 5.0f * dt;
-						}
-						if (Keyboard_IsKeyDown(KK_D))
-						{
-							//g_Velocity.x += 10.0f * dt;
-							g_Velocity.x += cameraforward.z * 5.0f * dt;
-							g_Velocity.z -= cameraforward.x * 5.0f * dt;
-						}
-						if (Keyboard_IsKeyDown(KK_W))
-						{
-							//g_Velocity.z += 10.0f * dt;
-							g_Velocity.x += cameraforward.x * 5.0f * dt;
-							g_Velocity.z += cameraforward.z * 5.0f * dt;
-						}
-						if (Keyboard_IsKeyDown(KK_S))
-						{
-							//g_Velocity.z -= 10.0f * dt;
-							g_Velocity.x -= cameraforward.x * 5.0f * dt;
-							g_Velocity.z -= cameraforward.z * 5.0f * dt;
-						}
-						////ベクトルの長さ
-						//float forcelength = sqrtf(force.x * force.x
-						//	+ force.y * force.y
-						//	+ force.z * force.z);
-
-						//if (forcelength > 1.0f)
-						//{
-						//	//正規化
-						//	force.x /= forcelength;
-						//	force.z /= forcelength;
-						//}
-
-						//接地摩擦
-						//g_Velocity.z -= g_Velocity.z * 2.0f * dt;
-						//g_Velocity.x -= g_Velocity.x * 2.0f * dt;
-
 						g_Velocity.y *= -0.3f;//反発係数
-						if (Keyboard_IsKeyTrigger(KK_SPACE))
-						{
-							//ジャンプ
-							g_Velocity.y += 7.0f;
-						}
 					}
 				}
 			}
