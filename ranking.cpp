@@ -5,7 +5,7 @@
 #include "sprite.h"
 
 
-static int g_Texture, g_Ranking[4] = { 10,5,1,0 };
+static int g_Texture, g_Ranking[4] = {1,5,10,0};
 
 
 void SetRanking(int Ranking)
@@ -14,7 +14,7 @@ void SetRanking(int Ranking)
 
 	for (int i = 3; i > 0; i--)
 	{
-		if (g_Ranking[i] > g_Ranking[i - 1])
+		if (g_Ranking[i] < g_Ranking[i - 1])
 		{
 			int ranking = g_Ranking[i];
 			g_Ranking[i] = g_Ranking[i - 1];
@@ -49,7 +49,7 @@ void RankingDraw(void)
 	for (int j = 0; j < 3; j++)
 	{
 		int value = g_Ranking[j];
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			int num = value % 10; //ˆê‚ÌˆÊ‚ğæ“¾
 			value /= 10; //Ÿ‚ÌŒ…‚Ö

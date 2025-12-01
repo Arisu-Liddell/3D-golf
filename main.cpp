@@ -196,7 +196,7 @@ void Initialize(HWND hWnd)
 
 	g_Transition = false;
 
-	SetScene(SCENE_GAME);
+	SetScene(SCENE_TITLE);
 
 
 }
@@ -266,8 +266,6 @@ void Draw(void)
 
 void Finalize(void)
 {
-
-
 	//終了処理
 	PolygonFinalize();
 	//スプライトの終了処理
@@ -288,46 +286,42 @@ void Finalize(void)
 
 void SetScene(SCENE scene)
 {
-	////やけくそコード群
-	
+	// 現在のシーンを終了させる
 	switch (g_scene)
 	{
 	case SCENE_TITLE:
 		TitleFinalize();
-		GameFinalize();
-		ResultFinalize();
 		break;
 	case SCENE_GAME:
-		TitleFinalize();
 		GameFinalize();
-		ResultFinalize();
 		break;
 	case SCENE_RESULT:
-		TitleFinalize();
-		GameFinalize();
 		ResultFinalize();
+		break;
+	default:
 		break;
 	}
+
+	// シーンを変更
 	g_scene = scene;
+
+	// 次のシーンを初期化
 	switch (g_scene)
 	{
 	case SCENE_TITLE:
-		GameInitialize();
-		ResultInitialize();
 		TitleInitialize();
 		break;
 	case SCENE_GAME:
 		GameInitialize();
-		ResultInitialize();
-		TitleInitialize();
 		break;
 	case SCENE_RESULT:
-		GameInitialize();
 		ResultInitialize();
-		TitleInitialize();
+		break;
+	default:
 		break;
 	}
 }
+
 
 void Transition(SCENE Next)
 {
