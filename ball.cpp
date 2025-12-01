@@ -7,15 +7,31 @@
 #include "field.h"
 #include "goal.h"
 #include "main.h"
+#include "score.h"
+#include "ranking.h"
+
+enum BALL_STATE
+{
+	//BALL_STATE_FALL,
+	//BALL_STATE_JUMP,
+	BALL_STATE_MOVE,
+	BALL_STATE_GOAL
+};
+static BALL_STATE g_State;
+static int g_StateCount;
 
 static MODEL* g_Model = NULL;
-
 static XMFLOAT3 g_Position;//位置
 static XMFLOAT3 g_Rotation;//回転
 static XMFLOAT3 g_Velocity;//速度
+
 static float dt = 1.0f / 60.0f;
+static bool g_OnGroundA;
+static bool g_OnGroundB;
 
 void BallHitCheck(void);
+void BallMove(void);//ポリゴン移動処理
+
 
 XMFLOAT3 GetBallPosition(void)
 {
@@ -28,15 +44,43 @@ void BallInitialize(void)
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//回転初期化
 	g_Position = XMFLOAT3(0.0f, 3.0f, 0.0f);//位置初期化
 	g_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);//速度初期化
+
+	g_State  = BALL_STATE_MOVE;
+	g_StateCount = 0;
+
+
+	bool g_OnGroundA = false;
+	bool g_OnGroundB = false;
 }
 
 void BallFinalize(void)
 {
 	ModelRelease(g_Model);
-
 }
 
 void BallUpdate(void)
+{
+	//ステートマシン
+	switch(g_State)
+	{
+		case BALL_STATE_MOVE:
+			BallMove();
+			break;
+		case BALL_STATE_GOAL:
+			g_StateCount++;
+			//リザルト画面遷移	
+			if (g_StateCount > 30)
+			{
+				Transition(SCENE_RESULT);
+				
+			}
+			break;
+		default:
+			break;
+	}
+
+}
+void BallMove(void)
 {
 	XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
 	XMFLOAT3 force = { 0.0f,0.0f,0.0f };//力ベクトル初期化
@@ -50,6 +94,7 @@ void BallUpdate(void)
 	cameraforward.x /= length;
 	cameraforward.y /= length;
 	cameraforward.z /= length;
+
 
 	//移動入力
 	if (Keyboard_IsKeyDown(KK_A))
@@ -74,8 +119,15 @@ void BallUpdate(void)
 	}
 	if (Keyboard_IsKeyTrigger(KK_SPACE))
 	{
-		//ジャンプ
-		g_Velocity.y += 7.0f;
+		if (g_OnGroundA == true or g_OnGroundB == true)
+		{
+			g_Velocity.x += cameraforward.x* 5.0f;
+			g_Velocity.z += cameraforward.z* 5.0f;
+			//ジャンプ
+			g_Velocity.y += 7.0f;
+
+			ScoreAdd(1);//スコア加算
+		}
 	}
 	
 
@@ -96,9 +148,18 @@ void BallUpdate(void)
 
 	//重力
 	g_Velocity.y -= 9.8f * dt;
+
 	//摩擦
-	g_Velocity.x -= g_Velocity.x * 2.0f * dt;
-	g_Velocity.z -= g_Velocity.z * 2.0f * dt;
+	if (g_OnGroundA == true or g_OnGroundB == true)
+	{
+		g_Velocity.x -= g_Velocity.x * dt;
+		g_Velocity.z -= g_Velocity.z * dt;
+	}
+	else
+	{
+		g_Velocity.x -= g_Velocity.x * 0.3f* dt;
+		g_Velocity.z -= g_Velocity.z * 0.3f* dt;
+	}
 	g_Velocity.y -= g_Velocity.y * 0.1f * dt;
 	//移動
 	g_Position.x += g_Velocity.x * dt;
@@ -122,8 +183,10 @@ void BallUpdate(void)
 
 	if (GoalLength < 1.0f)
 	{
-		//リザルト画面遷移	
-		SetScene(SCENE_RESULT);
+		//ランキング登録
+		SetRanking(GetScore());
+
+		g_State = BALL_STATE_GOAL;
 	}
 
 	//リスポーン
@@ -173,24 +236,13 @@ void BallDraw(void)
 
 void BallHitCheck(void)
 {
-	//XMFLOAT3 cameraforward = GetCameraForward();//これ単体だと距離で回転速度が変わってしまう
-	//cameraforward.y = 0.0f;
-	////ベクトルの長さ
-	//float length = sqrtf(cameraforward.x * cameraforward.x
-	//	+ cameraforward.y * cameraforward.y
-	//	+ cameraforward.z * cameraforward.z);
-
-	////正規化
-	//cameraforward.x /= length;
-	//cameraforward.y /= length;
-	//cameraforward.z /= length;
-
 	BLOCK* block = GetFieldBlock();
 	BLOCK* item = GetFieldItem();
 
 	float collitionRadius = 0.5f;
 	float ballRadius = 0.2f;
 	float e = 0.5f;
+
 
 	for (int i = 0; i < GridCount; i++)
 	{
@@ -259,7 +311,12 @@ void BallHitCheck(void)
 						{
 							g_Position.y = block[i].Position.y - collitionRadius - ballRadius;
 						}
+						g_OnGroundA = true;
 						g_Velocity.y *= -0.7f;//反発係数
+					}
+					else
+					{
+						g_OnGroundA = false;
 					}
 				}
 			}
@@ -332,7 +389,11 @@ void BallHitCheck(void)
 						{
 							g_Position.y = item[x].Position.y - collitionRadius - ballRadius;
 						}
+						g_OnGroundB = true;
 						g_Velocity.y *= -0.3f;//反発係数
+					}
+					{
+						g_OnGroundB = false;
 					}
 				}
 			}

@@ -77,7 +77,7 @@ static BLOCK g_Item[ItemCount] =
 	{{00.0f,	1.0f,	10.0f},	0},
 	{{00.0f,	1.0f,	11.0f},	0},
 	{{00.0f,	1.0f,	12.0f},	0},//58
-	{{00.0f,	2.0f,	5.0f},	0},
+	{{00.0f,	2.0f,	5.0f},	2},
 };
 
 BLOCK* GetFieldBlock(void);

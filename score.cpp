@@ -41,7 +41,7 @@ void ScoreDraw(void)
 	
 	int value = g_Score;
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		int num = value % 10; //ˆê‚ÌˆÊ‚ðŽæ“¾
 		value /= 10; //ŽŸ‚ÌŒ…‚Ö
@@ -53,7 +53,7 @@ void ScoreDraw(void)
 
 
 		SpriteDraw(
-			300.0f - i * 50.0f, 100.0f, 100.0f, 100.0f,
+			100.0f - i * 50.0f, 100.0f, 100.0f, 100.0f,
 			tx, ty,
 			tw, th, 0.0f);
 	}

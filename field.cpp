@@ -39,8 +39,8 @@ void FieldInitialize(void)
 
 	g_Model[0] = ModelLoad("asset\\model\\cube.fbx");
 	g_Model[1] = ModelLoad("asset\\model\\tree.fbx");
-//	g_Model[2] = ModelLoad("asset\\model\\ball.fbx");
-//	g_Model[3] = ModelLoad("asset\\model\\Bear_Normal.fbx");
+	g_Model[2] = ModelLoad("asset\\model\\Goal.fbx");
+	//g_Model[3] = ModelLoad("asset\\model\\Goal.fbx");
 
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//âÒì]èâä˙âª
 }
@@ -49,8 +49,8 @@ void FieldFinalize(void)
 {
 	ModelRelease(g_Model[0]);
 	ModelRelease(g_Model[1]);
-//	ModelRelease(g_Model[2]);
-//	ModelRelease(g_Model[3]);
+	ModelRelease(g_Model[2]);
+	//ModelRelease(g_Model[3]);
 
 }
 

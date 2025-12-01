@@ -32,8 +32,8 @@ void TitleUpdate(void)
 
 	if (Keyboard_IsKeyTrigger(KK_ENTER))//エンターキーが押されたら
 	{
-		//Transition(SCENE_GAME);//タイトルからゲームへ
-		SetScene(SCENE_GAME);
+		Transition(SCENE_GAME);//タイトルからゲームへ
+		//SetScene(SCENE_GAME);
 	}
 }
 
