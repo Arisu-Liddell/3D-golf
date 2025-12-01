@@ -7,3 +7,4 @@ void BallDraw(void);//ƒ|ƒŠƒSƒ“•`‰æ
 void BallHitCheck(void);//ƒ|ƒŠƒSƒ““–‚½‚è”»’è
 
 XMFLOAT3 GetBallPosition(void);
+////////////////////////
