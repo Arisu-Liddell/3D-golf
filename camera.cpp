@@ -17,6 +17,7 @@ XMMATRIX GetCameraProjectionMatrix(void)
 {
 	return g_ProjectionMatrix;
 }
+///jugyou delog
 //ƒJƒƒ‰Œü‚«
 XMFLOAT3 GetCameraForward(void)
 {

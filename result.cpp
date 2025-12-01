@@ -65,7 +65,7 @@ void ResultDraw(void)
 
     }
     // スコア表示（ScoreDraw は内部で number.png を使って描画）
-  //  ScoreDraw();
+      //ScoreDraw();
       RankingDraw();
     // 「PRESS ENTER」想定のボタン（上下にゆっくり浮遊）
     {

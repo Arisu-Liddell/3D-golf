@@ -40,31 +40,31 @@ void GameUpdate(void)
 	GoalUpdate();
 	BackgroundUpdate();
 	ScoreUpdate();
-
 }
 
 void GameDraw(void)
 {
-	//BackgroundDraw();
-
 	LIGHT light;
-	//light.LightDirection = { 0.0f,-1.0f,0.0f };
 	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };
 	direction = XMVector3Normalize(direction);//　正規化する関数
 	XMStoreFloat3(&light.LightDirection, direction);
 
-	Shader_SetLight(light);//ライト設定
-	SetDepthEnable(true);//Zバッファ有効化
+
+	BackgroundDraw();
+
 	light.LightEnable = TRUE;
-	
+	Shader_SetLight(light);//ライト設定
+
+	SetDepthEnable(true);//Zバッファ有効化
 	CameraDraw();
 	//CubeDraw();
 	FieldDraw();
 	BallDraw();
 	GoalDraw();
+	SetDepthEnable(false);//
 
 	light.LightEnable = FALSE;
-	SetDepthEnable(false);//
+	Shader_SetLight(light);//ライト設定
 
 	ScoreDraw();;
 }
