@@ -134,8 +134,10 @@
     <ClCompile Include="Backsground.cpp" />
     <ClCompile Include="ball.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
     <ClCompile Include="directx.cpp" />
+    <ClCompile Include="effect.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="goal.cpp" />
@@ -156,8 +158,10 @@
     <ClInclude Include="Background.h" />
     <ClInclude Include="ball.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="cube.h" />
     <ClInclude Include="debug_ostream.h" />
     <ClInclude Include="directx.h" />
+    <ClInclude Include="effect.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="goal.h" />

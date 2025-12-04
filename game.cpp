@@ -11,6 +11,7 @@
 #include "field.h"	
 #include "goal.h"
 #include "Background.h"
+#include "effect.h"
 
 
 
@@ -27,6 +28,8 @@ void GameInitialize(void)
 	GoalInitialize();
 	BackgroundInitialize();
 	ScoreInitialize();
+	EffectInitialize();
+
 }
 
 
@@ -40,6 +43,7 @@ void GameUpdate(void)
 	GoalUpdate();
 	BackgroundUpdate();
 	ScoreUpdate();
+	EffectUpdate();
 }
 
 void GameDraw(void)
@@ -49,9 +53,9 @@ void GameDraw(void)
 	direction = XMVector3Normalize(direction);//　正規化する関数
 	XMStoreFloat3(&light.LightDirection, direction);
 
-
 	BackgroundDraw();
 
+	//ライトオン
 	light.LightEnable = TRUE;
 	Shader_SetLight(light);//ライト設定
 
@@ -61,17 +65,21 @@ void GameDraw(void)
 	FieldDraw();
 	BallDraw();
 	GoalDraw();
-	SetDepthEnable(false);//
 
+		//ライトオフ
 	light.LightEnable = FALSE;
 	Shader_SetLight(light);//ライト設定
 
+	EffectDraw();//他のオブジェクトの後に
+
+	SetDepthEnable(false);//
 	ScoreDraw();;
 }
 
 
 void GameFinalize(void)
 {
+	EffectFinalize();
 	BackgroundFinalize();
 	CameraFinalize();
 	GoalFinalize();

@@ -9,6 +9,7 @@
 #include "main.h"
 #include "score.h"
 #include "ranking.h"
+#include "effect.h"
 
 enum BALL_STATE
 {
@@ -28,6 +29,7 @@ static XMFLOAT3 g_Velocity;//‘¬“x
 static float dt = 1.0f / 60.0f;
 static bool g_OnGroundA;
 static bool g_OnGroundB;
+static bool success = false;
 
 void BallHitCheck(void);
 void BallMove(void);//ƒ|ƒŠƒSƒ“ˆÚ“®ˆ—
@@ -71,8 +73,12 @@ void BallUpdate(void)
 			//ƒŠƒUƒ‹ƒg‰æ–Ê‘JˆÚ	
 			if (g_StateCount > 30)
 			{
-				Transition(SCENE_RESULT);
-				
+				//SetScene(SCENE_RESULT);
+				if (success == false)
+				{
+					Transition(SCENE_RESULT);
+				}
+				success = true;
 			}
 			break;
 		default:
@@ -126,10 +132,15 @@ void BallMove(void)
 			//ƒWƒƒƒ“ƒv
 			g_Velocity.y += 7.0f;
 
+			CreateEffect(g_Position);
+
 			ScoreAdd(1);//ƒXƒRƒA‰ÁŽZ
 		}
 	}
-	
+	if (g_OnGroundA == true)
+	{
+		CreateEffect(g_Position);
+	}
 
 	//ƒxƒNƒgƒ‹‚Ì’·‚³
 	float forcelength = sqrtf(force.x * force.x
@@ -246,6 +257,7 @@ void BallHitCheck(void)
 
 	for (int i = 0; i < GridCount; i++)
 	{
+		//Y•ûŒü
 		if (block[i].Position.y - collitionRadius < g_Position.y &&
 			g_Position.y < block[i].Position.y + collitionRadius)
 		{
@@ -260,16 +272,18 @@ void BallHitCheck(void)
 					{
 						//‰E‘¤‚©‚çÕ“Ë
 						g_Position.x = block[i].Position.x + collitionRadius + ballRadius;
+						CreateEffect(g_Position);
 					}
 					else
 					{
 						//¶‘¤‚©‚çÕ“Ë
 						g_Position.x = block[i].Position.x - collitionRadius - ballRadius;
+						CreateEffect(g_Position);
 					}
-					//g_Velocity.x -= g_Velocity.x * 2.0f * dt;
 					g_Velocity.x *= -0.5;//”½”­ŒW”
 				}
 			}
+			//Z•ûŒü
 			else if (block[i].Position.x - collitionRadius < g_Position.x &&
 				g_Position.x < block[i].Position.x + collitionRadius)
 			{
@@ -281,11 +295,13 @@ void BallHitCheck(void)
 					{
 						//Žè‘O‚©‚çÕ“Ë
 						g_Position.z = block[i].Position.z + collitionRadius + ballRadius;
+						CreateEffect(g_Position);
 					}
 					else
 					{
 						//‰œ‚©‚çÕ“Ë
 						g_Position.z = block[i].Position.z - collitionRadius - ballRadius;
+						CreateEffect(g_Position);
 					}
 					g_Velocity.z *= -0.5f;//”½”­ŒW”
 				}
@@ -297,26 +313,33 @@ void BallHitCheck(void)
 			if (block[i].Position.z - collitionRadius < g_Position.z &&
 				g_Position.z < block[i].Position.z + collitionRadius)
 			{
+				//‰¡•ûŒü
 				if (block[i].Position.x - collitionRadius < g_Position.x &&
 					g_Position.x < block[i].Position.x + collitionRadius)
 				{
+					//Y•ûŒü
 					if (block[i].Position.y - collitionRadius < g_Position.y + ballRadius &&
 						g_Position.y - ballRadius < block[i].Position.y + collitionRadius)
 					{
+						//Õ“Ëˆ—
 						if (block[i].Position.y < g_Position.y)
 						{
 							g_Position.y = block[i].Position.y + collitionRadius + ballRadius;
+							if (g_OnGroundA == false)
+							{
+								if (g_Velocity.y < -3.0f)
+								{
+									CreateEffect(g_Position);
+									g_OnGroundA = true;
+								}
+							}
 						}
 						else
 						{
 							g_Position.y = block[i].Position.y - collitionRadius - ballRadius;
 						}
-						g_OnGroundA = true;
-						g_Velocity.y *= -0.7f;//”½”­ŒW”
-					}
-					else
-					{
 						g_OnGroundA = false;
+						g_Velocity.y *= -0.7f;//”½”­ŒW”
 					}
 				}
 			}
@@ -338,13 +361,15 @@ void BallHitCheck(void)
 					{
 						//‰E‘¤‚©‚çÕ“Ë
 						g_Position.x = item[x].Position.x + collitionRadius + ballRadius;
+						CreateEffect(g_Position);
 					}
 					else
 					{
 						//¶‘¤‚©‚çÕ“Ë
 						g_Position.x = item[x].Position.x - collitionRadius - ballRadius;
+						CreateEffect(g_Position);
 					}
-					//g_Velocity.x -= g_Velocity.x * 2.0f * dt;
+					//CreateEffect(g_Position);
 					g_Velocity.x *= -0.5;//”½”­ŒW”
 				}
 			}
@@ -359,11 +384,13 @@ void BallHitCheck(void)
 					{
 						//Žè‘O‚©‚çÕ“Ë
 						g_Position.z = item[x].Position.z + collitionRadius + ballRadius;
+						CreateEffect(g_Position);
 					}
 					else
 					{
 						//‰œ‚©‚çÕ“Ë
 						g_Position.z = item[x].Position.z - collitionRadius - ballRadius;
+						CreateEffect(g_Position);
 					}
 					g_Velocity.z *= -0.5f;//”½”­ŒW”
 				}
@@ -384,16 +411,21 @@ void BallHitCheck(void)
 						if (item[x].Position.y < g_Position.y)
 						{
 							g_Position.y = item[x].Position.y + collitionRadius + ballRadius;
+							if (g_OnGroundB == false)
+							{
+								if (g_Velocity.y < -3.0f)
+								{
+									CreateEffect(g_Position);
+								}
+								g_OnGroundB = true;
+							}
 						}
 						else
 						{
 							g_Position.y = item[x].Position.y - collitionRadius - ballRadius;
+							g_OnGroundB = false;
 						}
-						g_OnGroundB = true;
 						g_Velocity.y *= -0.3f;//”½”­ŒW”
-					}
-					{
-						g_OnGroundB = false;
 					}
 				}
 			}

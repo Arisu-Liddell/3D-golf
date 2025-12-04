@@ -38,7 +38,7 @@ void TitleUpdate(void)
 }
 
 //ƒ|ƒŠƒSƒ“•`‰æ
-void TitleDraw(void)
+void TitleDraw(void) 
 {
 	const float Button_Center_Y = SCREEN_HEIGHT * 0.73f;
 	const float Button_Aplitude = 25.0f;
