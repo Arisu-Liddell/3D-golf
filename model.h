@@ -20,10 +20,12 @@ struct MODEL
 	std::unordered_map<std::string, ID3D11ShaderResourceView*> Texture;
 };
 
-
+static ID3D11Buffer* g_ColorCB = nullptr;
+static XMFLOAT4 g_Color = XMFLOAT4(1, 1, 1, 1);
 MODEL* ModelLoad(const char* FileName);
 void ModelRelease(MODEL* model);
 void ModelDraw(MODEL* model);
+
 
 // map 
 // 	std::map<std::string, int> Value;

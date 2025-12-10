@@ -137,10 +137,6 @@ void BallMove(void)
 			ScoreAdd(1);//スコア加算
 		}
 	}
-	if (g_OnGroundA == true)
-	{
-		CreateEffect(g_Position);
-	}
 
 	//ベクトルの長さ
 	float forcelength = sqrtf(force.x * force.x
@@ -256,7 +252,7 @@ void BallHitCheck(void)
 
 
 	for (int i = 0; i < GridCount; i++)
-	{
+	{  
 		//Y方向
 		if (block[i].Position.y - collitionRadius < g_Position.y &&
 			g_Position.y < block[i].Position.y + collitionRadius)
@@ -321,31 +317,38 @@ void BallHitCheck(void)
 					if (block[i].Position.y - collitionRadius < g_Position.y + ballRadius &&
 						g_Position.y - ballRadius < block[i].Position.y + collitionRadius)
 					{
-						//衝突処理
+						//衝突判定
 						if (block[i].Position.y < g_Position.y)
 						{
+							//上から衝突
 							g_Position.y = block[i].Position.y + collitionRadius + ballRadius;
 							if (g_OnGroundA == false)
 							{
+
 								if (g_Velocity.y < -3.0f)
 								{
 									CreateEffect(g_Position);
-									g_OnGroundA = true;
 								}
+								g_OnGroundA = true;
 							}
 						}
 						else
 						{
+							//下から衝突
 							g_Position.y = block[i].Position.y - collitionRadius - ballRadius;
 						}
-						g_OnGroundA = false;
 						g_Velocity.y *= -0.7f;//反発係数
+					}
+					else
+					{
+						//当たってない 
+						g_OnGroundA = false;
 					}
 				}
 			}
 		}
 	}
-	for (int x = 0; x < ItemCount; x++)
+	for (int x = 0; x < Grid2Count; x++)
 	{
 		if (item[x].Position.y - collitionRadius < g_Position.y &&
 			g_Position.y < item[x].Position.y + collitionRadius)
@@ -423,9 +426,12 @@ void BallHitCheck(void)
 						else
 						{
 							g_Position.y = item[x].Position.y - collitionRadius - ballRadius;
-							g_OnGroundB = false;
 						}
 						g_Velocity.y *= -0.3f;//反発係数
+					}
+					else
+					{
+						g_OnGroundB = false;
 					}
 				}
 			}

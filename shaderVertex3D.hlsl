@@ -14,6 +14,10 @@ cbuffer LightBuffer : register(b1) //スロット番号1
     float3 LightDirecition; //光の向き
     float Dummy1; //ダミー　float4の倍数にするため 
 }
+cbuffer ColorBuffer : register(b2)
+{
+    float4 MulColor; // 乗算カラー
+}
 
 //float4x4 mtx; //定数バッファで橋渡し
 
@@ -26,15 +30,6 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
             out float2 outTexcoord : TEXCOORD0, //出力out
             out float4 outColor : COROR0) : SV_Position
 {
-    //ライト方向ベクトル
-    //float3 lightDirection = float3(0.5, -1.0, 1.0);
-    //lightDirection = normalize(lightDirection);//正規化　長さを1にする
-    
-    //ランバート拡散照明
-//   outColor.rgb += float3(0.1, 0.1, 0.4); //環境光　anbient light
-//   outColor.rgb = saturate( - dot(LightDirecition, normal));//dot = 内積
-    
-
     if(LightEnable)
     {
         //法線ベクトルの座標返還（回転）
@@ -53,9 +48,13 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
         outColor.rgb = 1.0;
         outColor.rgb += float3(0.0, 0.0, 0.0);
     }
-    
+
     outColor.a = 1.0;
     outTexcoord = texcoord;
+    outColor.rgb *= MulColor.rgb;
+    outColor.a *= MulColor.a;
+
+
     return mul(position, Mtx);
 }
 

@@ -6,19 +6,18 @@
 #include "field.h"
 
 
-static MODEL* g_Model[3] = {};
+static MODEL* g_Model[5] = {};
 static XMFLOAT3 g_Rotation;
 
 
 BLOCK* GetFieldBlock(void)
 {
-	return g_Block;
+	return g_Block1;
 }
 BLOCK* GetFieldItem(void)
 {
-	return g_Item;
+	return g_Block2;
 }
-
 
 void InitPositions()
 {
@@ -27,8 +26,8 @@ void InitPositions()
 	{
 		for (int x = GridMinX; x <= GridMaxX; ++x)
 		{
-			g_Block[i].Position = DirectX::XMFLOAT3((float)x, 0.0f, (float)z);
-			g_Block[i].Type = 0;
+			g_Block1[i].Position = DirectX::XMFLOAT3((float)x, 0.0f, (float)z);
+			g_Block1[i].Type = 0;
 			++i;
 		}
 	}
@@ -40,7 +39,8 @@ void FieldInitialize(void)
 	g_Model[0] = ModelLoad("asset\\model\\cube.fbx");
 	g_Model[1] = ModelLoad("asset\\model\\tree.fbx");
 	g_Model[2] = ModelLoad("asset\\model\\Goal.fbx");
-	//g_Model[3] = ModelLoad("asset\\model\\Goal.fbx");
+	g_Model[3] = ModelLoad("asset\\model\\ball.fbx");
+	g_Model[4] = ModelLoad("asset\\model\\Bear_Normal.fbx");
 
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//回転初期化
 }
@@ -50,13 +50,12 @@ void FieldFinalize(void)
 	ModelRelease(g_Model[0]);
 	ModelRelease(g_Model[1]);
 	ModelRelease(g_Model[2]);
-	//ModelRelease(g_Model[3]);
-
+	ModelRelease(g_Model[3]);
+	ModelRelease(g_Model[4]);
 }
 
 void FieldUpdate(void)
 {
-	//g_Rotation.y += 0.00f;
 }
 
 void FieldDraw(void)
@@ -72,34 +71,28 @@ void FieldDraw(void)
 
 
 		//拡大縮小マトリクス
-	//	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
 		matrix.World *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
 
 		//回転マトリクス
-	//	matrix *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); 
 		matrix.World *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z);
 
 		//移動マトリクス
-	//	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
-		matrix.World *= XMMatrixTranslation(g_Block[i].Position.x, g_Block[i].Position.y, g_Block[i].Position.z);
-
+		matrix.World *= XMMatrixTranslation(g_Block1[i].Position.x, g_Block1[i].Position.y, g_Block1[i].Position.z);
 		matrix.Mtx = matrix.World;
 
 		//	ビューマトリクス
-		//	matrix *= GetCameraViewMatrix();
 		matrix.Mtx *= GetCameraViewMatrix();
 
 		//プロジェクションマトリクス
-	//	matrix *= GetCameraProjectionMatrix();
 		matrix.Mtx *= GetCameraProjectionMatrix();
 
 		Shader_SetMatrix(matrix);//シェーダーに行列を設定
 
 		//足場モデル描画
-		ModelDraw(g_Model[g_Block[i].Type]);
+		ModelDraw(g_Model[g_Block1[i].Type]);
 	}
 
-	for (int i = 0; i < ItemCount; i++)
+	for (int i = 0; i < Grid2Count; i++)
 	{
 		//頂点シェーダーに変換行列を設定
 		MATRIX matrix;
@@ -109,30 +102,25 @@ void FieldDraw(void)
 
 
 		//拡大縮小マトリクス
-	//	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
 		matrix.World *= XMMatrixScaling(1.0f, 1.0f, 1.0f);
 
 		//回転マトリクス
-	//	matrix *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z); 
 		matrix.World *= XMMatrixRotationRollPitchYaw(g_Rotation.x, g_Rotation.y, g_Rotation.z);
 
 		//移動マトリクス
-	//	matrix *= XMMatrixTranslation(g_Position.x, g_Position.y, g_Position.z);
-		matrix.World *= XMMatrixTranslation(g_Item[i].Position.x, g_Item[i].Position.y, g_Item[i].Position.z);
+		matrix.World *= XMMatrixTranslation(g_Block2[i].Position.x, g_Block2[i].Position.y, g_Block2[i].Position.z);
 
 		matrix.Mtx = matrix.World;
 
-	//	//	ビューマトリクス
-		//	matrix *= GetCameraViewMatrix();
+		//ビューマトリクス
 		matrix.Mtx *= GetCameraViewMatrix();
 
 		//プロジェクションマトリクス
-	//	matrix *= GetCameraProjectionMatrix();
 		matrix.Mtx *= GetCameraProjectionMatrix();
 
 		Shader_SetMatrix(matrix);//シェーダーに行列を設定
 
 		//足場モデル描画
-		ModelDraw(g_Model[g_Item[i].Type]);
+		ModelDraw(g_Model[g_Block2[i].Type]);
 	}
 }

@@ -5,8 +5,6 @@
 #include "model.h"
 
 
-
-
 MODEL* ModelLoad( const char *FileName)
 {
 	MODEL* model = new MODEL;
@@ -35,7 +33,6 @@ MODEL* ModelLoad( const char *FileName)
 			{
 				vertex[v].position = XMFLOAT3(mesh->mVertices[v].x, -mesh->mVertices[v].z, mesh->mVertices[v].y);
 				vertex[v].texcoord = XMFLOAT2( mesh->mTextureCoords[0][v].x, mesh->mTextureCoords[0][v].y);
-				//vertex[v].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 				vertex[v].normal = XMFLOAT3(mesh->mNormals[v].x, -mesh->mNormals[v].z, mesh->mNormals[v].y);
 			}
 
@@ -138,14 +135,30 @@ void ModelRelease(MODEL* model)
 	delete model;
 }
 
+void SetModelColor(float r, float g, float b, float a)
+{
+	g_Color = XMFLOAT4(r, g, b, a);
+}
 
+void UpdateModelColor()
+{
+	D3D11_MAPPED_SUBRESOURCE mapped{};
+	DirectXGetDeviceContext()->Map(g_ColorCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+
+	memcpy(mapped.pData, &g_Color, sizeof(XMFLOAT4));
+
+	DirectXGetDeviceContext()->Unmap(g_ColorCB, 0);
+
+	// VSのスロット b2
+	DirectXGetDeviceContext()->VSSetConstantBuffers(2, 1, &g_ColorCB);
+}
 
 void ModelDraw(MODEL* model)
 {
 	// プリミティブトポロジ設定
 	DirectXGetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-
+	UpdateModelColor();
 	for (unsigned int m = 0; m < model->AiScene->mNumMeshes; m++)
 	{
 		aiMesh* mesh = model->AiScene->mMeshes[m];
@@ -170,6 +183,8 @@ void ModelDraw(MODEL* model)
 		DirectXGetDeviceContext()->DrawIndexed(mesh->mNumFaces * 3, 0, 0);
 	}
 }
+
+
 
 
 
