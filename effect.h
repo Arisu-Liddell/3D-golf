@@ -8,6 +8,3 @@ void EffectDraw(void);//ポリゴン描画
 
 void CreateEffect(XMFLOAT3 Position);//エフェクト生成
 
-
-
-#pragma once

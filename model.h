@@ -25,7 +25,7 @@ static XMFLOAT4 g_Color = XMFLOAT4(1, 1, 1, 1);
 MODEL* ModelLoad(const char* FileName);
 void ModelRelease(MODEL* model);
 void ModelDraw(MODEL* model);
-
+//void UpdateModelColor();
 
 // map 
 // 	std::map<std::string, int> Value;

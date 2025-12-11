@@ -140,25 +140,25 @@ void SetModelColor(float r, float g, float b, float a)
 	g_Color = XMFLOAT4(r, g, b, a);
 }
 
-void UpdateModelColor()
-{
-	D3D11_MAPPED_SUBRESOURCE mapped{};
-	DirectXGetDeviceContext()->Map(g_ColorCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-
-	memcpy(mapped.pData, &g_Color, sizeof(XMFLOAT4));
-
-	DirectXGetDeviceContext()->Unmap(g_ColorCB, 0);
-
-	// VSのスロット b2
-	DirectXGetDeviceContext()->VSSetConstantBuffers(2, 1, &g_ColorCB);
-}
+//void UpdateModelColor()
+//{
+//	D3D11_MAPPED_SUBRESOURCE mapped{};
+//	DirectXGetDeviceContext()->Map(g_ColorCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+//
+//	memcpy(mapped.pData, &g_Color, sizeof(XMFLOAT4));
+//
+//	DirectXGetDeviceContext()->Unmap(g_ColorCB, 0);
+//
+//	// VSのスロット b2
+//	DirectXGetDeviceContext()->VSSetConstantBuffers(2, 1, &g_ColorCB);
+//}
 
 void ModelDraw(MODEL* model)
 {
 	// プリミティブトポロジ設定
 	DirectXGetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	UpdateModelColor();
+	//UpdateModelColor();
 	for (unsigned int m = 0; m < model->AiScene->mNumMeshes; m++)
 	{
 		aiMesh* mesh = model->AiScene->mMeshes[m];

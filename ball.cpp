@@ -10,11 +10,12 @@
 #include "score.h"
 #include "ranking.h"
 #include "effect.h"
+#include "trail.h"
 
 enum BALL_STATE
 {
-	//BALL_STATE_FALL,
-	//BALL_STATE_JUMP,
+	BALL_STATE_GROUND,
+	BALL_STATE_FLOW,
 	BALL_STATE_MOVE,
 	BALL_STATE_GOAL
 };
@@ -65,15 +66,21 @@ void BallUpdate(void)
 	//ステートマシン
 	switch(g_State)
 	{
+		case BALL_STATE_GROUND:
+			
+			break;
+		case BALL_STATE_FLOW:
+			//ジャンプ処理
+			break;
 		case BALL_STATE_MOVE:
 			BallMove();
 			break;
 		case BALL_STATE_GOAL:
 			g_StateCount++;
+
 			//リザルト画面遷移	
 			if (g_StateCount > 30)
 			{
-				//SetScene(SCENE_RESULT);
 				if (success == false)
 				{
 					Transition(SCENE_RESULT);
@@ -175,6 +182,9 @@ void BallMove(void)
 
 	//当たり判定
 	BallHitCheck();
+
+	//トレイル座標設定
+	SetTrailPosition(g_Position);
 	
 	//ゴール衝突判定
 	XMFLOAT3 gorlPosition = GetGoalPosition();
@@ -190,6 +200,7 @@ void BallMove(void)
 
 	if (GoalLength < 1.0f)
 	{
+		CreateEffect(gorlPosition);
 		//ランキング登録
 		SetRanking(GetScore());
 
@@ -322,7 +333,7 @@ void BallHitCheck(void)
 						{
 							//上から衝突
 							g_Position.y = block[i].Position.y + collitionRadius + ballRadius;
-							if (g_OnGroundA == false)
+							if (g_State )
 							{
 
 								if (g_Velocity.y < -3.0f)

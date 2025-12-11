@@ -10,7 +10,7 @@ struct EFFECT
 	XMFLOAT3 Position; //X座標
 	int Frame; //タイマー
 };
-EFFECT g_Effect[100]; //エフェクトの配列
+static EFFECT g_Effect[100]; //エフェクトの配列
 
 static int g_Texture;
 static ID3D11Buffer* g_VertexBuffer; //頂点バッファ
@@ -38,7 +38,7 @@ void EffectInitialize(void)
 
 void EffectFinalize(void)
 {
-
+	SAFE_RELEASE(g_VertexBuffer); //頂点バッファの解放
 }
 
 void EffectUpdate(void)

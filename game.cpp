@@ -12,6 +12,7 @@
 #include "goal.h"
 #include "Background.h"
 #include "effect.h"
+#include "trail.h"
 
 
 
@@ -29,6 +30,8 @@ void GameInitialize(void)
 	BackgroundInitialize();
 	ScoreInitialize();
 	EffectInitialize();
+	TrailInitialize();
+
 
 }
 
@@ -44,6 +47,7 @@ void GameUpdate(void)
 	BackgroundUpdate();
 	ScoreUpdate();
 	EffectUpdate();
+	TrailUpdate();
 }
 
 void GameDraw(void)
@@ -70,6 +74,7 @@ void GameDraw(void)
 	light.LightEnable = FALSE;
 	Shader_SetLight(light);//ライト設定
 
+	TrailDraw();
 	EffectDraw();//他のオブジェクトの後に
 
 	SetDepthEnable(false);//
@@ -80,6 +85,7 @@ void GameDraw(void)
 void GameFinalize(void)
 {
 	EffectFinalize();
+	TrailFinalize();
 	BackgroundFinalize();
 	CameraFinalize();
 	GoalFinalize();

@@ -30,6 +30,11 @@ XMFLOAT3 GetCameraForward(void)
 	return forward;
 }
 
+XMFLOAT3 GetCameraPosition(void)
+{
+	return g_Position;
+}
+
 void CameraInitialize(void)//ƒ|ƒŠƒSƒ“‰Šú‰»
 {
 	g_Position = XMFLOAT3(0.0f, 5.0f,	-10.0f);
@@ -81,3 +86,32 @@ void CameraDraw(void)//ƒ|ƒŠƒSƒ“•`‰æ
 	g_ProjectionMatrix = XMMatrixPerspectiveFovLH(1.0f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 1000.0f);
 }
 //g_Target 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

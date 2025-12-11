@@ -7,10 +7,18 @@
 #include "keyboard.h"
 #include <iostream>
 
+enum TITLE_STATE
+{
+	TITLE_STATE_STAY,
+	TITLE_STATE_START
+};
+static TITLE_STATE g_State;
 
 static int g_Texture;
 static int g_Texturebutton;
 static float g_ButtonTime;
+static bool success = false;
+
 
 void TitleInitialize(void)
 {
@@ -18,6 +26,8 @@ void TitleInitialize(void)
 	g_Texture = TextureLoad(L"asset\\texture\\title.png"); //テクスチャの読み込み
 	g_Texturebutton = TextureLoad(L"asset\\texture\\button.png"); //テクスチャの読み込み
 	g_ButtonTime = 0.0f;
+	g_State = TITLE_STATE_STAY;
+	success = false;
 }
 
 void TitleFinalize(void)
@@ -28,12 +38,24 @@ void TitleUpdate(void)
 {
 	g_ButtonTime = g_ButtonTime + 0.01f;
 	if (g_ButtonTime > 6.2831853f) g_ButtonTime -= 6.2831853f;
-
-
-	if (Keyboard_IsKeyTrigger(KK_ENTER))//エンターキーが押されたら
+	//ステートマシン
+	switch (g_State)
 	{
-		Transition(SCENE_GAME);//タイトルからゲームへ
-		//SetScene(SCENE_GAME);
+	case TITLE_STATE_STAY:
+		if (Keyboard_IsKeyTrigger(KK_ENTER))//エンターキーが押されたら
+		{
+			g_State = TITLE_STATE_START;
+		}
+		break;
+	case TITLE_STATE_START:
+			if (success == false)
+			{
+				Transition(SCENE_GAME);
+			}
+			success = true;
+		break;
+	default:
+		break;
 	}
 }
 

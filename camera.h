@@ -7,4 +7,5 @@ void CameraDraw(void);//ƒ|ƒŠƒSƒ“•`‰æ
 XMMATRIX GetCameraViewMatrix(void);
 XMMATRIX GetCameraProjectionMatrix(void);
 XMFLOAT3 GetCameraForward(void);
+XMFLOAT3 GetCameraPosition(void);
 
