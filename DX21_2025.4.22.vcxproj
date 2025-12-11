@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Backsground.cpp" />
     <ClCompile Include="ball.cpp" />
+    <ClCompile Include="BillBordTest.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClInclude Include="Background.h" />
     <ClInclude Include="ball.h" />
+    <ClInclude Include="BillBordTest.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="debug_ostream.h" />

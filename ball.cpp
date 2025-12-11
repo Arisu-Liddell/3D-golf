@@ -51,9 +51,10 @@ void BallInitialize(void)
 	g_State  = BALL_STATE_MOVE;
 	g_StateCount = 0;
 
-
 	bool g_OnGroundA = false;
 	bool g_OnGroundB = false;
+
+	ResetTrailPosition(g_Position);
 }
 
 void BallFinalize(void)

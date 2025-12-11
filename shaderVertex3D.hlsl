@@ -14,12 +14,7 @@ cbuffer LightBuffer : register(b1) //スロット番号1
     float3 LightDirecition; //光の向き
     float Dummy1; //ダミー　float4の倍数にするため 
 }
-/*
-cbuffer ColorBuffer : register(b2)
-{
-    float4 MulColor; // 乗算カラー
-}
-*/
+
 //float4x4 mtx; //定数バッファで橋渡し
 
 

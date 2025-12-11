@@ -8,4 +8,4 @@ void TrailDraw(void);//ポリゴン描画
 
 void CreateTrail(XMFLOAT3 Position);//エフェクト生成
 void SetTrailPosition(XMFLOAT3 Position);
-
+void ResetTrailPosition(XMFLOAT3 Position);

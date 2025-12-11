@@ -131,3 +131,13 @@ void SetTrailPosition(XMFLOAT3 Position)
 	//今のボールの位置をセット
 	g_TrailPosition[TRAIL_LENGTH - 1] = Position;
 }
+
+void ResetTrailPosition(XMFLOAT3 Position)
+{
+	//後ろにずらす
+	for (int i = 0; i < TRAIL_LENGTH; i++)
+	{
+		//一つ前の位置をセット
+		g_TrailPosition[i] = Position;
+	}
+}
