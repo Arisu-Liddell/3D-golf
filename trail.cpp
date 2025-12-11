@@ -22,7 +22,7 @@ void TrailInitialize(void)
 		DirectXGetDevice()->CreateBuffer(&bd, NULL, &g_VertexBuffer); //バッファの生成
 	}
 
-	g_Texture = TextureLoad(L"asset\\texture\\Tile.jpg"); //テクスチャの読み込み
+	g_Texture = TextureLoad(L"asset\\texture\\Trail.png"); //テクスチャの読み込み
 
 }
 
