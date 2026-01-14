@@ -11,13 +11,18 @@
 #include "ranking.h"
 #include "effect.h"
 #include "trail.h"
+#include "Shadow.h"
 
 enum BALL_STATE
 {
-	BALL_STATE_GROUND,
-	BALL_STATE_FLOW,
 	BALL_STATE_MOVE,
-	BALL_STATE_GOAL
+	BALL_STATE_GOAL,
+	BALL_STATE_NONE
+};
+enum GROUND_STATE
+{
+	GROUND_STATE_GROUND,
+	GROUND_STATE_FLOW
 };
 static BALL_STATE g_State;
 static int g_StateCount;
@@ -30,7 +35,6 @@ static XMFLOAT3 g_Velocity;//速度
 static float dt = 1.0f / 60.0f;
 static bool g_OnGroundA;
 static bool g_OnGroundB;
-static bool success = false;
 
 void BallHitCheck(void);
 void BallMove(void);//ポリゴン移動処理
@@ -47,12 +51,10 @@ void BallInitialize(void)
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//回転初期化
 	g_Position = XMFLOAT3(0.0f, 3.0f, 0.0f);//位置初期化
 	g_Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);//速度初期化
-
+	g_OnGroundA = false;
+	g_OnGroundB = false;
 	g_State  = BALL_STATE_MOVE;
 	g_StateCount = 0;
-
-	bool g_OnGroundA = false;
-	bool g_OnGroundB = false;
 
 	ResetTrailPosition(g_Position);
 }
@@ -65,32 +67,24 @@ void BallFinalize(void)
 void BallUpdate(void)
 {
 	//ステートマシン
-	switch(g_State)
+	switch (g_State)
 	{
-		case BALL_STATE_GROUND:
-			
-			break;
-		case BALL_STATE_FLOW:
-			//ジャンプ処理
-			break;
-		case BALL_STATE_MOVE:
-			BallMove();
-			break;
-		case BALL_STATE_GOAL:
-			g_StateCount++;
-
-			//リザルト画面遷移	
-			if (g_StateCount > 30)
-			{
-				if (success == false)
-				{
-					Transition(SCENE_RESULT);
-				}
-				success = true;
-			}
-			break;
-		default:
-			break;
+	//バウンド
+	case BALL_STATE_MOVE:
+		BallMove();
+		break;
+	case BALL_STATE_GOAL:
+		g_StateCount++;
+		//リザルト画面遷移	
+		if (g_StateCount > 30)
+		{
+			g_StateCount = 0;
+			g_State = BALL_STATE_NONE;
+			Transition(SCENE_RESULT);
+		}
+		break;
+	default:
+		break;
 	}
 
 }
@@ -109,34 +103,36 @@ void BallMove(void)
 	cameraforward.y /= length;
 	cameraforward.z /= length;
 
-
-	//移動入力
-	if (Keyboard_IsKeyDown(KK_A))
+	if (g_OnGroundA == true or g_OnGroundB == true)
 	{
-		force.x -= cameraforward.z;
-		force.z += cameraforward.x;
-	}
-	if (Keyboard_IsKeyDown(KK_D))
-	{
-		force.x += cameraforward.z;
-		force.z -= cameraforward.x;
-	}
-	if (Keyboard_IsKeyDown(KK_W))
-	{
-		force.x += cameraforward.x;
-		force.z += cameraforward.z;
-	}
-	if (Keyboard_IsKeyDown(KK_S))
-	{
-		force.x -= cameraforward.x;
-		force.z -= cameraforward.z;
+		//移動入力
+		if (Keyboard_IsKeyDown(KK_A))
+		{
+			force.x -= cameraforward.z;
+			force.z += cameraforward.x;
+		}
+		if (Keyboard_IsKeyDown(KK_D))
+		{
+			force.x += cameraforward.z;
+			force.z -= cameraforward.x;
+		}
+		if (Keyboard_IsKeyDown(KK_W))
+		{
+			force.x += cameraforward.x;
+			force.z += cameraforward.z;
+		}
+		if (Keyboard_IsKeyDown(KK_S))
+		{
+			force.x -= cameraforward.x;
+			force.z -= cameraforward.z;
+		}
 	}
 	if (Keyboard_IsKeyTrigger(KK_SPACE))
 	{
 		if (g_OnGroundA == true or g_OnGroundB == true)
 		{
-			g_Velocity.x += cameraforward.x* 5.0f;
-			g_Velocity.z += cameraforward.z* 5.0f;
+			g_Velocity.x += cameraforward.x * 5.0f;
+			g_Velocity.z += cameraforward.z * 5.0f;
 			//ジャンプ
 			g_Velocity.y += 7.0f;
 
@@ -164,16 +160,16 @@ void BallMove(void)
 	//重力
 	g_Velocity.y -= 9.8f * dt;
 
-	//摩擦
+	//摩擦]
 	if (g_OnGroundA == true or g_OnGroundB == true)
 	{
 		g_Velocity.x -= g_Velocity.x * dt;
 		g_Velocity.z -= g_Velocity.z * dt;
 	}
-	else
+	else if (g_OnGroundA == false or g_OnGroundB == false)
 	{
-		g_Velocity.x -= g_Velocity.x * 0.3f* dt;
-		g_Velocity.z -= g_Velocity.z * 0.3f* dt;
+		g_Velocity.x -= g_Velocity.x * 0.3f * dt;
+		g_Velocity.z -= g_Velocity.z * 0.3f * dt;
 	}
 	g_Velocity.y -= g_Velocity.y * 0.1f * dt;
 	//移動
@@ -186,7 +182,10 @@ void BallMove(void)
 
 	//トレイル座標設定
 	SetTrailPosition(g_Position);
-	
+
+	//影座標設定
+	SetShadowPosition(g_Position);
+
 	//ゴール衝突判定
 	XMFLOAT3 gorlPosition = GetGoalPosition();
 	XMFLOAT3 direction;
@@ -198,7 +197,6 @@ void BallMove(void)
 	float GoalLength = sqrtf(direction.x * direction.x
 		+ direction.y * direction.y
 		+ direction.z * direction.z);
-
 	if (GoalLength < 1.0f)
 	{
 		CreateEffect(gorlPosition);
@@ -207,7 +205,6 @@ void BallMove(void)
 
 		g_State = BALL_STATE_GOAL;
 	}
-
 	//リスポーン
 	if (g_Position.y < -30.0)
 	{
@@ -226,7 +223,6 @@ void BallDraw(void)
 	//Mtx = Matrix ?
 
 	//拡大縮小マトリクス
-//	matrix *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
 	matrix.World *= XMMatrixScaling(1.0f, 1.0f, 1.0f); 
 
 	//回転マトリクス
@@ -253,200 +249,127 @@ void BallDraw(void)
 	ModelDraw(g_Model);
 }
 
+// block / item 共通の衝突処理（g_State ゲートは入れない）
+static void ResolveBallVsBlocks(
+		BLOCK* blocks, int count,
+		float bounceY,
+		bool& onGroundFlag)           // block:0.7f / item:0.3f
+{
+	const float collitionRadius = 0.5f;
+	const float ballRadius = 0.2f;
+
+	bool landed = false;
+
+	for (int i = 0; i < count; i++)
+	{
+		// =========================
+		// X/Z方向（Yが範囲内のとき）
+		// =========================
+		if (blocks[i].Position.y - collitionRadius < g_Position.y &&
+			g_Position.y < blocks[i].Position.y + collitionRadius)
+		{
+			// X方向（Zが範囲内）
+			if (blocks[i].Position.z - collitionRadius < g_Position.z &&
+				g_Position.z < blocks[i].Position.z + collitionRadius)
+			{
+				if (blocks[i].Position.x - collitionRadius < g_Position.x + ballRadius &&
+					g_Position.x - ballRadius < blocks[i].Position.x + collitionRadius)
+				{
+					if (blocks[i].Position.x < g_Position.x)
+					{
+						g_Position.x = blocks[i].Position.x + collitionRadius + ballRadius;
+						CreateEffect(g_Position);
+					}
+					else
+					{
+						g_Position.x = blocks[i].Position.x - collitionRadius - ballRadius;
+						CreateEffect(g_Position);
+					}
+					g_Velocity.x *= -0.5f;
+				}
+			}
+			// Z方向（Xが範囲内）
+			else if (blocks[i].Position.x - collitionRadius < g_Position.x &&
+				g_Position.x < blocks[i].Position.x + collitionRadius)
+			{
+				if (blocks[i].Position.z - collitionRadius < g_Position.z + ballRadius &&
+					g_Position.z - ballRadius < blocks[i].Position.z + collitionRadius)
+				{
+					if (blocks[i].Position.z < g_Position.z)
+					{
+						g_Position.z = blocks[i].Position.z + collitionRadius + ballRadius;
+						CreateEffect(g_Position);
+					}
+					else
+					{
+						g_Position.z = blocks[i].Position.z - collitionRadius - ballRadius;
+						CreateEffect(g_Position);
+					}
+					g_Velocity.z *= -0.5f;
+				}
+			}
+		}
+		// =========================
+		// Y方向（X/Zが範囲内のとき）
+		// =========================
+		else
+		{
+			if (blocks[i].Position.z - collitionRadius < g_Position.z &&
+				g_Position.z < blocks[i].Position.z + collitionRadius)
+			{
+				if (blocks[i].Position.x - collitionRadius < g_Position.x &&
+					g_Position.x < blocks[i].Position.x + collitionRadius)
+				{
+					if (blocks[i].Position.y - collitionRadius < g_Position.y + ballRadius &&
+						g_Position.y - ballRadius < blocks[i].Position.y + collitionRadius)
+					{
+						if (blocks[i].Position.y < g_Position.y)
+						{
+							// 上から衝突
+							g_Position.y = blocks[i].Position.y + collitionRadius + ballRadius;
+
+							// “初回着地だけ”エフェクト
+							if (onGroundFlag == false)
+							{
+								if (g_Velocity.y < -3.0f)
+								{
+									CreateEffect(g_Position);
+									onGroundFlag = false;
+								}
+								else
+								{
+									onGroundFlag = true;
+								}
+							}
+						}
+						else
+						{
+							// 下から衝突
+							g_Position.y = blocks[i].Position.y - collitionRadius - ballRadius;
+						}
+
+						g_Velocity.y *= -bounceY;
+					}
+					else
+					{
+						// 当たってない
+						onGroundFlag = false;
+					}
+				}
+			}
+		}
+	}
+}
+
+
 void BallHitCheck(void)
 {
 	BLOCK* block = GetFieldBlock();
 	BLOCK* item = GetFieldItem();
 
-	float collitionRadius = 0.5f;
-	float ballRadius = 0.2f;
-	float e = 0.5f;
+	// block：元コードは「g_Stateが真のときだけ接地エフェクト＆接地更新」っぽい挙動が混ざっていたので gateLandingEffect=true
+	ResolveBallVsBlocks(block, GridCount, 0.7f,g_OnGroundA);
 
-
-	for (int i = 0; i < GridCount; i++)
-	{  
-		//Y方向
-		if (block[i].Position.y - collitionRadius < g_Position.y &&
-			g_Position.y < block[i].Position.y + collitionRadius)
-		{
-			//横方向
-			if (block[i].Position.z - collitionRadius < g_Position.z &&
-				g_Position.z < block[i].Position.z + collitionRadius)
-			{
-				if (block[i].Position.x - collitionRadius < g_Position.x + ballRadius &&
-					g_Position.x - ballRadius < block[i].Position.x + collitionRadius)
-				{
-					if (block[i].Position.x < g_Position.x)
-					{
-						//右側から衝突
-						g_Position.x = block[i].Position.x + collitionRadius + ballRadius;
-						CreateEffect(g_Position);
-					}
-					else
-					{
-						//左側から衝突
-						g_Position.x = block[i].Position.x - collitionRadius - ballRadius;
-						CreateEffect(g_Position);
-					}
-					g_Velocity.x *= -0.5;//反発係数
-				}
-			}
-			//Z方向
-			else if (block[i].Position.x - collitionRadius < g_Position.x &&
-				g_Position.x < block[i].Position.x + collitionRadius)
-			{
-				//Z方向
-				if (block[i].Position.z - collitionRadius < g_Position.z + ballRadius &&
-					g_Position.z - ballRadius < block[i].Position.z + collitionRadius)
-				{
-					if (block[i].Position.z < g_Position.z)
-					{
-						//手前から衝突
-						g_Position.z = block[i].Position.z + collitionRadius + ballRadius;
-						CreateEffect(g_Position);
-					}
-					else
-					{
-						//奥から衝突
-						g_Position.z = block[i].Position.z - collitionRadius - ballRadius;
-						CreateEffect(g_Position);
-					}
-					g_Velocity.z *= -0.5f;//反発係数
-				}
-			}
-		}
-		else
-		{
-			//縦方向
-			if (block[i].Position.z - collitionRadius < g_Position.z &&
-				g_Position.z < block[i].Position.z + collitionRadius)
-			{
-				//横方向
-				if (block[i].Position.x - collitionRadius < g_Position.x &&
-					g_Position.x < block[i].Position.x + collitionRadius)
-				{
-					//Y方向
-					if (block[i].Position.y - collitionRadius < g_Position.y + ballRadius &&
-						g_Position.y - ballRadius < block[i].Position.y + collitionRadius)
-					{
-						//衝突判定
-						if (block[i].Position.y < g_Position.y)
-						{
-							//上から衝突
-							g_Position.y = block[i].Position.y + collitionRadius + ballRadius;
-							if (g_State )
-							{
-
-								if (g_Velocity.y < -3.0f)
-								{
-									CreateEffect(g_Position);
-								}
-								g_OnGroundA = true;
-							}
-						}
-						else
-						{
-							//下から衝突
-							g_Position.y = block[i].Position.y - collitionRadius - ballRadius;
-						}
-						g_Velocity.y *= -0.7f;//反発係数
-					}
-					else
-					{
-						//当たってない 
-						g_OnGroundA = false;
-					}
-				}
-			}
-		}
-	}
-	for (int x = 0; x < Grid2Count; x++)
-	{
-		if (item[x].Position.y - collitionRadius < g_Position.y &&
-			g_Position.y < item[x].Position.y + collitionRadius)
-		{
-			//横方向
-			if (item[x].Position.z - collitionRadius < g_Position.z &&
-				g_Position.z < item[x].Position.z + collitionRadius)
-			{
-				if (item[x].Position.x - collitionRadius < g_Position.x + ballRadius &&
-					g_Position.x - ballRadius < item[x].Position.x + collitionRadius)
-				{
-					if (item[x].Position.x < g_Position.x)
-					{
-						//右側から衝突
-						g_Position.x = item[x].Position.x + collitionRadius + ballRadius;
-						CreateEffect(g_Position);
-					}
-					else
-					{
-						//左側から衝突
-						g_Position.x = item[x].Position.x - collitionRadius - ballRadius;
-						CreateEffect(g_Position);
-					}
-					//CreateEffect(g_Position);
-					g_Velocity.x *= -0.5;//反発係数
-				}
-			}
-			else if (item[x].Position.x - collitionRadius < g_Position.x &&
-				g_Position.x < item[x].Position.x + collitionRadius)
-			{
-				//Z方向
-				if (item[x].Position.z - collitionRadius < g_Position.z + ballRadius &&
-					g_Position.z - ballRadius < item[x].Position.z + collitionRadius)
-				{
-					if (item[x].Position.z < g_Position.z)
-					{
-						//手前から衝突
-						g_Position.z = item[x].Position.z + collitionRadius + ballRadius;
-						CreateEffect(g_Position);
-					}
-					else
-					{
-						//奥から衝突
-						g_Position.z = item[x].Position.z - collitionRadius - ballRadius;
-						CreateEffect(g_Position);
-					}
-					g_Velocity.z *= -0.5f;//反発係数
-				}
-			}
-		}
-		else
-		{
-			//縦方向
-			if (item[x].Position.z - collitionRadius < g_Position.z &&
-				g_Position.z < item[x].Position.z + collitionRadius)
-			{
-				if (item[x].Position.x - collitionRadius < g_Position.x &&
-					g_Position.x < item[x].Position.x + collitionRadius)
-				{
-					if (item[x].Position.y - collitionRadius < g_Position.y + ballRadius &&
-						g_Position.y - ballRadius < item[x].Position.y + collitionRadius)
-					{
-						if (item[x].Position.y < g_Position.y)
-						{
-							g_Position.y = item[x].Position.y + collitionRadius + ballRadius;
-							if (g_OnGroundB == false)
-							{
-								if (g_Velocity.y < -3.0f)
-								{
-									CreateEffect(g_Position);
-								}
-								g_OnGroundB = true;
-							}
-						}
-						else
-						{
-							g_Position.y = item[x].Position.y - collitionRadius - ballRadius;
-						}
-						g_Velocity.y *= -0.3f;//反発係数
-					}
-					else
-					{
-						g_OnGroundB = false;
-					}
-				}
-			}
-		}
-	}
+	// item：元コードは g_OnGroundB を普通に使っていたので gateLandingEffect=false
+	ResolveBallVsBlocks(item, Grid2Count, 0.3f,g_OnGroundB);
 }

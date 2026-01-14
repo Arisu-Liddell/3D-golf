@@ -7,7 +7,7 @@ float4 main(in float4 position : SV_Position,
 {
     float4 outColor = tex.Sample(samplerState, texcoord) * color;
     
-    //clip(outColor.a - 0.1); //アルファクリップテスト
+    clip(outColor.a - 0.1); //アルファクリップテスト
     
     return outColor;
 }

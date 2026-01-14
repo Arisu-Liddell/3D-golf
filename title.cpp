@@ -65,6 +65,7 @@ void TitleDraw(void)
 	const float Button_Center_Y = SCREEN_HEIGHT * 0.73f;
 	const float Button_Aplitude = 25.0f;
 
+	SetDepthEnable(false);   // ★2Dスプライトは必ずZ無効で描く
 	//テクスチャの設定
 	ID3D11ShaderResourceView* texture = GetTexture(g_Texture); //テクスチャの取得
 	DirectXGetDeviceContext()->PSSetShaderResources(0, 1, &texture); //テクスチャの設定

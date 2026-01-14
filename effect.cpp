@@ -7,7 +7,7 @@
 struct EFFECT
 {
 	bool Enable; //有効フラグ
-	XMFLOAT3 Position; //X座標
+	XMFLOAT3 Position; 
 	int Frame; //タイマー
 };
 static EFFECT g_Effect[100]; //エフェクトの配列

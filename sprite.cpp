@@ -1,6 +1,7 @@
 
 #include "directx.h"
 #include "shader.h"
+#include "sprite.h"
 
 static ID3D11Buffer* g_VertexBuffer; //頂点バッファ
 static const int g_VertexCount = 4; //頂点数

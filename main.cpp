@@ -28,7 +28,7 @@ int g_CountFPS = 0;
 char g_DebugStr[2048] = "ウィンドウ表示";//デバッグ表示用
 #endif
 
-static SCENE g_scene;
+static SCENE g_scene = SCENE_TITLE;
 static SCENE g_next;
 static int g_TransitionTexture;
 static bool g_Transition;
@@ -192,8 +192,6 @@ void Initialize(HWND hWnd)
 
 	g_TransitionTexture = TextureLoad(L"asset\\texture\\bg_01.png");
 
-	g_scene = SCENE_NONE;
-
 	g_Transition = false;
 
 	SetScene(SCENE_TITLE);
@@ -206,6 +204,7 @@ void Update(void)
 	//更新処理
 	switch (g_scene)
 	{
+		Keyboard_Update();
 	case SCENE_TITLE:
 		TitleUpdate();
 		break;
@@ -230,7 +229,6 @@ void Update(void)
 			g_Transition = false;
 		}
 	}
-		Keyboard_Update();
 
 }
 void Draw(void)
@@ -252,6 +250,7 @@ void Draw(void)
 
 	if (g_Transition == true)
 	{
+		SetDepthEnable(false);   // ★トランジションも2DなのでZ無効
 		//テクスチャの設定
 		ID3D11ShaderResourceView* texture = GetTexture(g_TransitionTexture); //テクスチャの取得
 		DirectXGetDeviceContext()->PSSetShaderResources(0, 1, &texture); //テクスチャの設定

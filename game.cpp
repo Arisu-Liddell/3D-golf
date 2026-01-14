@@ -13,6 +13,8 @@
 #include "Background.h"
 #include "effect.h"
 #include "trail.h"
+#include "BillBordTest.h"
+#include "Shadow.h"
 
 
 
@@ -31,6 +33,8 @@ void GameInitialize(void)
 	ScoreInitialize();
 	EffectInitialize();
 	TrailInitialize();
+	BillBordInitialize();
+	ShadowInitialize();
 
 
 }
@@ -48,6 +52,8 @@ void GameUpdate(void)
 	ScoreUpdate();
 	EffectUpdate();
 	TrailUpdate();
+	BillBordUpdate();
+	ShadowUpdate();
 }
 
 void GameDraw(void)
@@ -70,11 +76,15 @@ void GameDraw(void)
 	BallDraw();
 	GoalDraw();
 
-		//ライトオフ
+	//ライトオフ
 	light.LightEnable = FALSE;
 	Shader_SetLight(light);//ライト設定
 
+	ShadowDraw();
+
 	TrailDraw();
+
+	BillBordDraw();
 	EffectDraw();//他のオブジェクトの後に
 
 	SetDepthEnable(false);//
@@ -86,6 +96,8 @@ void GameFinalize(void)
 {
 	EffectFinalize();
 	TrailFinalize();
+	ShadowFinalize();
+	BillBordFinalize();
 	BackgroundFinalize();
 	CameraFinalize();
 	GoalFinalize();

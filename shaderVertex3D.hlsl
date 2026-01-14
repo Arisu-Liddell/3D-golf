@@ -30,6 +30,7 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
     {
         //法線ベクトルの座標返還（回転）
         normal = mul(float4(normal, 0.0), World);
+        normal = normalize(normal); //  正規化
         
         //ランバート拡散照明（直接光）
         outColor.rgb = saturate(-dot(LightDirecition, normal))
@@ -47,9 +48,6 @@ float4 main(in float4 position : POSITION0, //入力in　セマンティック=POSITION0
 
     outColor.a = 1.0;
     outTexcoord = texcoord;
-//    outColor.rgb *= MulColor.rgb;
-//    outColor.a *= MulColor.a;
-
 
     return mul(position, Mtx);
 }
