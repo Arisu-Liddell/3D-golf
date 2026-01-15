@@ -204,7 +204,6 @@ void Update(void)
 	//XVˆ—
 	switch (g_scene)
 	{
-		Keyboard_Update();
 	case SCENE_TITLE:
 		TitleUpdate();
 		break;
@@ -229,7 +228,7 @@ void Update(void)
 			g_Transition = false;
 		}
 	}
-
+	Keyboard_Update();
 }
 void Draw(void)
 {

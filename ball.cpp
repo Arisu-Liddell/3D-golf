@@ -131,8 +131,9 @@ void BallMove(void)
 	{
 		if (g_OnGroundA == true or g_OnGroundB == true)
 		{
-			g_Velocity.x += cameraforward.x * 5.0f;
-			g_Velocity.z += cameraforward.z * 5.0f;
+			CameraShake(2.0f);//カメラシェイク
+			//g_Velocity.x += cameraforward.x * 5.0f;
+			//g_Velocity.z += cameraforward.z * 5.0f;
 			//ジャンプ
 			g_Velocity.y += 7.0f;
 
@@ -278,11 +279,13 @@ static void ResolveBallVsBlocks(
 					if (blocks[i].Position.x < g_Position.x)
 					{
 						g_Position.x = blocks[i].Position.x + collitionRadius + ballRadius;
+						CameraShake(4.0f);//カメラシェイク
 						CreateEffect(g_Position);
 					}
 					else
 					{
 						g_Position.x = blocks[i].Position.x - collitionRadius - ballRadius;
+						CameraShake(4.0f);//カメラシェイク
 						CreateEffect(g_Position);
 					}
 					g_Velocity.x *= -0.5f;
@@ -298,11 +301,13 @@ static void ResolveBallVsBlocks(
 					if (blocks[i].Position.z < g_Position.z)
 					{
 						g_Position.z = blocks[i].Position.z + collitionRadius + ballRadius;
+						CameraShake(4.0f);//カメラシェイク
 						CreateEffect(g_Position);
 					}
 					else
 					{
 						g_Position.z = blocks[i].Position.z - collitionRadius - ballRadius;
+						CameraShake(4.0f);//カメラシェイク
 						CreateEffect(g_Position);
 					}
 					g_Velocity.z *= -0.5f;
@@ -333,11 +338,18 @@ static void ResolveBallVsBlocks(
 							{
 								if (g_Velocity.y < -3.0f)
 								{
+									//CameraShake((g_Velocity.y mod 10)+ 2.0f);//カメラシェイク
+									CameraShake(
+										fminf(fmodf(fabsf(g_Velocity.y), 1.0f) + 2.0, 6.0f)
+									);
 									CreateEffect(g_Position);
 									onGroundFlag = false;
 								}
 								else
 								{
+									CameraShake(
+										fminf(fmodf(fabsf(g_Velocity.y), 1.0f), 2.0f)
+									);
 									onGroundFlag = true;
 								}
 							}

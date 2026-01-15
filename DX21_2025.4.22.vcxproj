@@ -138,6 +138,7 @@
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="debug_ostream.cpp" />
     <ClCompile Include="directx.cpp" />
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="game.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="cube.h" />
     <ClInclude Include="debug_ostream.h" />
     <ClInclude Include="directx.h" />
+    <ClInclude Include="easing.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="game.h" />
