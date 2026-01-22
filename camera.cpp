@@ -62,16 +62,16 @@ void CameraInitialize(void)//ポリゴン初期化
 	g_ShakeTime = 0.0f;
 	g_ShakePower = 0.0f;
 
-	//g_FixCameraIndex = 0;
-	//g_FixCameraTime = 0.0f;
-	//g_FixCameraOld = g_FixCamera[0];
+	g_FixCameraIndex = 0;
+	g_FixCameraTime = 0.0f;
+	g_FixCameraOld = g_FixCamera[0];
 
-	//// ★ position は target + offset
-	//g_Position = XMFLOAT3(
-	//	g_Target.x + g_FixCamera[0].x,
-	//	g_Target.y + g_FixCamera[0].y,
-	//	g_Target.z + g_FixCamera[0].z
-	//);
+	// ★ position は target + offset
+	g_Position = XMFLOAT3(
+		g_Target.x + g_FixCamera[0].x,
+		g_Target.y + g_FixCamera[0].y,
+		g_Target.z + g_FixCamera[0].z
+	);
 }
 void CameraFinalize(void)//ポリゴン終了
 {
@@ -94,31 +94,61 @@ void CameraUpdate(void)//ポリゴン更新
 		g_Rotation.y += 0.1f;
 	}
 
-	//if (Keyboard_IsKeyDown(KK_UP))
-	//{
-	//	g_Target.y += 0.1f;
-	//}
-	//if (Keyboard_IsKeyDown(KK_DOWN))
-	//{
-	//	g_Target.y -= 0.1f;
-	//}
 
-
-	g_Position.x = g_Target.x + sinf(g_Rotation.y) * 3.0f;
-	g_Position.z = g_Target.z - cosf(g_Rotation.y) * 3.0f;
+	//g_Position.x = g_Target.x + sinf(g_Rotation.y) * 3.0f;
+	//g_Position.z = g_Target.z - cosf(g_Rotation.y) * 3.0f;
 	//sin cosを逆にすると90.逆になる　横基準ではなく奥行き基準で
 
-	////カメラシェイク処理
-	//g_ShakeTime += 1.0f / 60.0f;
-	//g_Position.y += sinf(g_ShakeTime * 120.0f) * 0.1f * g_ShakePower;
-
-	g_ShakePower -= 0.1f;//徐々に減衰
-	if(g_ShakePower < 0.0f)
+	//カメラの移動時間
+	g_FixCameraTime += 1.0f / 60.0f;
+	if (g_FixCameraTime > 1.0f)
 	{
-		g_ShakePower = 0.0f;
+		g_FixCameraTime = 1.0f;
 	}
 
+	//カメラ切り替え
+	if (Keyboard_IsKeyTrigger(KK_ADD))
+	{
+		g_FixCameraIndex--;
+		if (g_FixCameraIndex < 0)
+		{
+			g_FixCameraIndex = 3;
+		}
+		g_FixCameraTime = 0.0f;
+		g_FixCameraOld = XMFLOAT3
+		(
+			g_Position.x - g_Target.x,
+			g_Position.y - g_Target.y,
+			g_Position.z - g_Target.z
+		);
+	}
+	if (Keyboard_IsKeyTrigger(KK_SUBTRACT))
+	{
+		g_FixCameraIndex++;
+		if (g_FixCameraIndex > 3)
+		{
+			g_FixCameraIndex = 0;
+		}
+		g_FixCameraTime = 0.0f;
+		g_FixCameraOld = XMFLOAT3(
+			g_Position.x - g_Target.x,
+			g_Position.y - g_Target.y,
+			g_Position.z - g_Target.z
+		);
+	}
+
+	//カメラ位置線形補間
+	float ease = easeInOutCubic(g_FixCameraTime);
+
+	// ease を補間係数として使用
+	g_Position.x = g_FixCameraOld.x * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].x * ease;
+	g_Position.y = g_FixCameraOld.y * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].y * ease;
+	g_Position.z = g_FixCameraOld.z * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].z * ease;
+
 	//カメラシェイク処理
+	g_ShakeTime += 1.0f / 60.0f;
+	g_Position.y += sinf(g_ShakeTime * 120.0f) * 1.0f * g_ShakePower;
+
 	//1フレームの時間
 	const float dt = 1.0f / 60.0f;
 
@@ -134,54 +164,11 @@ void CameraUpdate(void)//ポリゴン更新
 	{
 		g_ShakePower = 0.0f;
 	}
-
-
-	////カメラの移動時間
-	//g_FixCameraTime += 1.0f / 60.0f;
-	//if(g_FixCameraTime > 1.0f)
-	//{
-	//	g_FixCameraTime = 1.0f;
-	//}
-
-	////カメラ切り替え
-	//if (Keyboard_IsKeyTrigger(KK_ADD))
-	//{
-	//	g_FixCameraIndex--;
-	//	if(g_FixCameraIndex < 0)
-	//	{
-	//		g_FixCameraIndex = 3;
-	//	}
-	//	g_FixCameraTime = 0.0f;
-	//	g_FixCameraOld = g_Position;
-	//	g_Position.x - g_Target.x,
-	//	g_Position.y - g_Target.y,
-	//	g_Position.z - g_Target.z
-	//}
-	//if (Keyboard_IsKeyTrigger(KK_SUBTRACT))
-	//{
-	//	g_FixCameraIndex++;
-	//	if(g_FixCameraIndex > 3)
-	//	{
-	//		g_FixCameraIndex = 0;
-	//	}
-	//	g_FixCameraTime = 0.0f;
-	//	g_FixCameraOld = g_Position;
-	//}
-
-	////カメラ位置線形補間
-	//float ease = easeInOutCubic(g_FixCameraTime);
-
-	//// ease を補間係数として使用
-	//g_Position.x = g_FixCameraOld.x * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].x * ease;
-	//g_Position.y = g_FixCameraOld.y * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].y * ease;
-	//g_Position.z = g_FixCameraOld.z * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].z * ease;
-
-
 }
 void CameraDraw(void)//ポリゴン描画
 {
 	//ビューマトリクス(カメラ)
-	
+
 	XMFLOAT3 up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	g_ViewMatrix = XMMatrixLookAtLH(XMLoadFloat3(&g_Position), XMLoadFloat3(&g_Target), XMLoadFloat3(&up));
 
@@ -191,39 +178,9 @@ void CameraDraw(void)//ポリゴン描画
 //g_Target 
 void CameraShake(float Tremor)
 {
-	//g_ShakePower = Tremor;
-	//g_ShakeTime = 0.0f;
 	if (Tremor > g_ShakePower)
 	{
 		g_ShakePower = Tremor;
 	}
 	g_ShakeTime = 0.0f;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
