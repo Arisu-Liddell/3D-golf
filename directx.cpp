@@ -86,8 +86,8 @@ void DirectXInitialize(HWND hWnd)
 
 	//ビューポート設定 設定を変えるとミニマップと科病ができる
 	D3D11_VIEWPORT vp;
-	vp.Width = (FLOAT)1600;//1600
-	vp.Height = (FLOAT)900;//900
+	vp.Width = SCREEN_WIDTH;
+	vp.Height = SCREEN_HEIGHT;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -163,6 +163,12 @@ ID3D11Device* DirectXGetDevice(void)
 ID3D11DeviceContext* DirectXGetDeviceContext(void)
 {
 	return g_DeviceContext;
+}
+
+//レンダーターゲット設定
+void SetRenderTarget(void)
+{
+	g_DeviceContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 }
 
 void Clear(void)

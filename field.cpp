@@ -6,7 +6,7 @@
 #include "field.h"
 
 
-static MODEL* g_Model[5] = {};
+static MODEL* g_Model[9] = {};
 static XMFLOAT3 g_Rotation;
 
 
@@ -41,6 +41,10 @@ void FieldInitialize(void)
 	g_Model[2] = ModelLoad("asset\\model\\Goal.fbx");
 	g_Model[3] = ModelLoad("asset\\model\\ball.fbx");
 	g_Model[4] = ModelLoad("asset\\model\\Bear_Normal.fbx");
+	g_Model[5] = ModelLoad("asset\\model\\Slope0.fbx");
+	g_Model[6] = ModelLoad("asset\\model\\Slope1.fbx");
+	g_Model[7] = ModelLoad("asset\\model\\Slope2.fbx");
+	g_Model[8] = ModelLoad("asset\\model\\Slope3.fbx");
 
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//âÒì]èâä˙âª
 }
@@ -52,6 +56,10 @@ void FieldFinalize(void)
 	ModelRelease(g_Model[2]);
 	ModelRelease(g_Model[3]);
 	ModelRelease(g_Model[4]);
+	ModelRelease(g_Model[5]);
+	ModelRelease(g_Model[6]);
+	ModelRelease(g_Model[7]);
+	ModelRelease(g_Model[8]);
 }
 
 void FieldUpdate(void)

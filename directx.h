@@ -22,6 +22,7 @@ void DirectXFinalize(void);//終了処理
 
 ID3D11Device* DirectXGetDevice(void);//デバイス取得
 ID3D11DeviceContext* DirectXGetDeviceContext(void);//デバイスコンテキスト取得
+void SetRenderTarget(void);//レンダーターゲット設定
 
 void Clear(void);//画面クリア
 void Present(void);//画面更新
@@ -29,8 +30,8 @@ void Present(void);//画面更新
 //void SetBlend;
 void SetDepthEnable(bool DepthEnable);//Zバッファスイッチ
 
-#define SCREEN_WIDTH (1280)//画面幅
-#define SCREEN_HEIGHT (720)//画面高さ
+#define SCREEN_WIDTH (1600)//画面幅
+#define SCREEN_HEIGHT (900)//画面高さ
 
 #define BLOCK_WIDTH  (50)
 #define BLOCK_HEIGHT (50)//1つのピースの幅と高さ

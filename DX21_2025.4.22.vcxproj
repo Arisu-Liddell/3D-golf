@@ -145,7 +145,10 @@
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="Objball.cpp" />
+    <ClCompile Include="ObjTrail.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="polygon.cpp" />
     <ClCompile Include="ranking.cpp" />
@@ -173,7 +176,10 @@
     <ClInclude Include="goal.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="Objball.h" />
+    <ClInclude Include="ObjTrail.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="polygon.h" />
     <ClInclude Include="ranking.h" />

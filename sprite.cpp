@@ -60,7 +60,6 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 	MATRIX matrix;
 	matrix.World = XMMatrixIdentity(); //単位行列を作成
 	
-
 	matrix.World *= XMMatrixScaling(wi, he, 1.0f); //拡大縮小
 
 	matrix.World *= XMMatrixRotationZ(rot); //回転
@@ -74,9 +73,6 @@ void SpriteDraw(float x, float y, float width, float height, float tx, float ty,
 
 
 	Shader_SetMatrix(matrix);//単位行列を設定
-
-
-//	Shader_SetMatrix(XMMatrixOrthographicOffCenterLH(0.0f, 1600.0f, 900.0f, 0.0f, 0.0f, 1.0f));//単位行列を設定
 
 	//頂点バッファを設定
 	UINT stride1 = sizeof(Vertex); //頂点のサイズ

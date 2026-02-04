@@ -7,14 +7,17 @@
 #include "cube.h"
 #include "camera.h"
 #include "ball.h"
+#include "Objball.h"
 #include "shader.h"
 #include "field.h"	
 #include "goal.h"
 #include "Background.h"
 #include "effect.h"
 #include "trail.h"
+#include "ObjTrail.h"
 #include "BillBordTest.h"
 #include "Shadow.h"
+#include "Map.h"
 
 
 
@@ -26,6 +29,7 @@ void GameInitialize(void)
 	CameraInitialize();
 	PauseInitialize();
 	BallInitialize();
+//	ObjballInitialize();
 	//CubeInitialize();
 	FieldInitialize();
 	GoalInitialize();
@@ -33,10 +37,10 @@ void GameInitialize(void)
 	ScoreInitialize();
 	EffectInitialize();
 	TrailInitialize();
+//	ObjTrailInitialize();
 	BillBordInitialize();
 	ShadowInitialize();
-
-
+	MapInitialize();
 }
 
 
@@ -45,6 +49,7 @@ void GameUpdate(void)
 	CameraUpdate();
 	PauseUpdate();
 	BallUpdate();
+//	ObjballUpdate();
 	//CubeUpdate();
 	FieldUpdate();
 	GoalUpdate();
@@ -52,6 +57,7 @@ void GameUpdate(void)
 	ScoreUpdate();
 	EffectUpdate();
 	TrailUpdate();
+//	ObjTrailUpdate();
 	BillBordUpdate();
 	ShadowUpdate();
 }
@@ -74,6 +80,7 @@ void GameDraw(void)
 	//CubeDraw();
 	FieldDraw();
 	BallDraw();
+//	ObjballDraw();
 	GoalDraw();
 
 	//ライトオフ
@@ -83,19 +90,27 @@ void GameDraw(void)
 	ShadowDraw();
 
 	TrailDraw();
+//	ObjTrailDraw();
 
 	BillBordDraw();
 	EffectDraw();//他のオブジェクトの後に
 
 	SetDepthEnable(false);//
-	ScoreDraw();;
+	ScoreDraw();
+
+	SetDepthEnable(true);
+	MapDraw	();
+
+	SetDepthEnable(false);//
 }
 
 
 void GameFinalize(void)
 {
+	MapFinalize();
 	EffectFinalize();
 	TrailFinalize();
+//	ObjTrailFinalize();
 	ShadowFinalize();
 	BillBordFinalize();
 	BackgroundFinalize();
@@ -103,7 +118,7 @@ void GameFinalize(void)
 	GoalFinalize();
 	//CubeFinalize();
 	FieldFinalize();
+//	ObjballFinalize();
 	BallFinalize();
-
 	ScoreFinalize();
 }
