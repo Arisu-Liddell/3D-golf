@@ -217,6 +217,7 @@
     <Library Include="assimp-vc143-mt.lib" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include=".txt" />
     <Text Include="FileName.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

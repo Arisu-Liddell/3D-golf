@@ -8,7 +8,7 @@ constexpr int GridMaxZ = 20;
 constexpr int GridWidth = GridMaxX - GridMinX + 1;     // 21
 constexpr int GridHeight = GridMaxZ - GridMinZ + 1;     // 21
 constexpr int GridCount = GridWidth * GridHeight;      // 441
-constexpr int Grid2Count = 66;
+constexpr int Grid2Count = 634;
 
 struct BLOCK
 {
@@ -88,6 +88,10 @@ static BLOCK g_Block2[Grid2Count] =
 
 BLOCK* GetFieldBlock(void);
 BLOCK* GetFieldItem(void);
+
+// CSVからBLOCK配列を読み込む（成功: true）
+bool Field_LoadBlocksFromCSV(const char* path, BLOCK* outBlocks, int maxCount, int* outCount);
+
 
 void InitPositions(void);
 void FieldInitialize(void);//ポリゴン初期化

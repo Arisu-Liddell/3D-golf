@@ -4,6 +4,9 @@
 #include "model.h"
 #include "camera.h"
 #include "field.h"
+#include <fstream>
+#include <sstream>
+#include <string>
 
 
 static MODEL* g_Model[9] = {};
@@ -17,6 +20,78 @@ BLOCK* GetFieldBlock(void)
 BLOCK* GetFieldItem(void)
 {
 	return g_Block2;
+}
+
+bool Field_LoadBlocksFromCSV(const char* path, BLOCK* outBlocks, int maxCount, int* outCount)
+{
+	if (!outBlocks || maxCount <= 0) return false;
+
+	std::ifstream file(path);
+	if (!file.is_open()) return false;
+
+	std::string line;
+	int count = 0;
+
+	auto isHeaderLine = [](const std::string& s) -> bool
+		{
+			// "id,x,y,z,type" みたいなヘッダをざっくり検出
+			return (s.find("id") != std::string::npos &&
+				s.find("x") != std::string::npos &&
+				s.find("y") != std::string::npos &&
+				s.find("z") != std::string::npos);
+		};
+
+	while (std::getline(file, line))
+	{
+		// 空行 / コメント行スキップ
+		if (line.empty()) continue;
+		if (line[0] == '#') continue;
+		if (line.size() >= 2 && line[0] == '/' && line[1] == '/') continue;
+
+		// ヘッダ行スキップ
+		if (count == 0 && isHeaderLine(line)) continue;
+
+		std::stringstream ss(line);
+
+		// CSVは最低でも id,x,y,z,type の5列を想定（後ろにcomment列があっても無視）
+		std::string tmp;
+		int id = 0;
+		float x = 0, y = 0, z = 0;
+		int type = 0;
+
+		// id
+		if (!std::getline(ss, tmp, ',')) continue;
+		try { id = std::stoi(tmp); }
+		catch (...) { continue; }
+
+		// x
+		if (!std::getline(ss, tmp, ',')) continue;
+		try { x = std::stof(tmp); }
+		catch (...) { continue; }
+
+		// y
+		if (!std::getline(ss, tmp, ',')) continue;
+		try { y = std::stof(tmp); }
+		catch (...) { continue; }
+
+		// z
+		if (!std::getline(ss, tmp, ',')) continue;
+		try { z = std::stof(tmp); }
+		catch (...) { continue; }
+
+		// type
+		if (!std::getline(ss, tmp, ',')) continue;
+		try { type = std::stoi(tmp); }
+		catch (...) { continue; }
+
+		if (count >= maxCount) break;
+
+		outBlocks[count].Position = XMFLOAT3(x, y, z);
+		outBlocks[count].Type = type;
+		++count;
+	}
+	if (outCount) *outCount = count;
+	return (count > 0);
 }
 
 void InitPositions()
@@ -35,7 +110,10 @@ void InitPositions()
 
 void FieldInitialize(void)
 {
-
+	int loaded = 0;
+	if (Field_LoadBlocksFromCSV("asset\\data\\field_objects.csv", g_Block2, Grid2Count, &loaded))
+	{
+	} 
 	g_Model[0] = ModelLoad("asset\\model\\cube.fbx");
 	g_Model[1] = ModelLoad("asset\\model\\tree.fbx");
 	g_Model[2] = ModelLoad("asset\\model\\Goal.fbx");
@@ -68,7 +146,6 @@ void FieldUpdate(void)
 
 void FieldDraw(void)
 {
-	InitPositions();
 	for (int i = 0; i < GridCount; i++)
 	{
 		//頂点シェーダーに変換行列を設定
