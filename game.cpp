@@ -18,6 +18,8 @@
 #include "BillBordTest.h"
 #include "Shadow.h"
 #include "Map.h"
+#include "Skydome.h"
+
 
 
 
@@ -41,6 +43,7 @@ void GameInitialize(void)
 	BillBordInitialize();
 	ShadowInitialize();
 	MapInitialize();
+	SkyDomeInitialize();
 }
 
 
@@ -48,6 +51,7 @@ void GameUpdate(void)
 {
 	CameraUpdate();
 	PauseUpdate();
+	SkyDomeUpdate();
 	BallUpdate();
 //	ObjballUpdate();
 	//CubeUpdate();
@@ -65,19 +69,27 @@ void GameUpdate(void)
 void GameDraw(void)
 {
 	LIGHT light;
+	//ライトオン
+	light.LightEnable = true;
+	Shader_SetLight(light);//ライト設定
+
 	XMVECTOR direction = { 0.3f,-1.0f, 0.5f };
 	direction = XMVector3Normalize(direction);//　正規化する関数
 	XMStoreFloat3(&light.LightDirection, direction);
+	SetDepthEnable(true);//Zバッファ有効化
 
-	BackgroundDraw();
+	CameraDraw();
 
-	//ライトオン
-	light.LightEnable = TRUE;
+	//ライトオフ
+	light.LightEnable = false;
 	Shader_SetLight(light);//ライト設定
 
-	SetDepthEnable(true);//Zバッファ有効化
-	CameraDraw();
-	//CubeDraw();
+	SkyDomeDraw();
+
+	//ライトオン
+	light.LightEnable = true;
+	Shader_SetLight(light);//ライト設定
+
 	FieldDraw();
 	BallDraw();
 //	ObjballDraw();
@@ -107,13 +119,14 @@ void GameDraw(void)
 
 void GameFinalize(void)
 {
+	SkyDomeFinalize();
 	MapFinalize();
 	EffectFinalize();
 	TrailFinalize();
 //	ObjTrailFinalize();
 	ShadowFinalize();
 	BillBordFinalize();
-	BackgroundFinalize();
+//	BackgroundFinalize();
 	CameraFinalize();
 	GoalFinalize();
 	//CubeFinalize();

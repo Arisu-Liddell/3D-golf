@@ -85,6 +85,7 @@ void CameraUpdate(void)//ポリゴン更新
 	g_Target.y += (BallTarget.y - g_Target.y) * 0.1f;
 	g_Target.z += (BallTarget.z - g_Target.z) * 0.1f;
 
+
 	if (Keyboard_IsKeyDown(KK_RIGHT))
 	{
 		g_Rotation.y -= 0.1f;
@@ -93,10 +94,25 @@ void CameraUpdate(void)//ポリゴン更新
 	{
 		g_Rotation.y += 0.1f;
 	}
+	if(Keyboard_IsKeyDown(KK_UP))
+	{
+		g_Rotation.x -= 0.1f;
+	}
+	if (Keyboard_IsKeyDown(KK_DOWN))
+	{
+		g_Rotation.x += 0.1f;
+	}
 
+	const float CAMERA_DISTANCE = 3.0f;
 
-	g_Position.x = g_Target.x + sinf(g_Rotation.y) * 3.0f;
-	g_Position.z = g_Target.z - cosf(g_Rotation.y) * 3.0f;
+	// ピッチ制限（真上・真下を向きすぎないように）
+	const float PITCH_LIMIT = DirectX::XM_PIDIV2 - 0.1f;
+	if (g_Rotation.x > PITCH_LIMIT) g_Rotation.x = PITCH_LIMIT;
+	if (g_Rotation.x < -PITCH_LIMIT) g_Rotation.x = -PITCH_LIMIT;
+
+	//球面座標計算メモ
+	//g_Position.x = g_Target.x + sinf(g_Rotation.y) * 3.0f;
+	//g_Position.z = g_Target.z - cosf(g_Rotation.y) * 3.0f;
 	//sin cosを逆にすると90.逆になる　横基準ではなく奥行き基準で
 
 	//カメラの移動時間
@@ -137,9 +153,8 @@ void CameraUpdate(void)//ポリゴン更新
 	//	);
 	//}
 
-	//カメラ位置線形補間
-	float ease = easeInOutCubic(g_FixCameraTime);
-
+	////カメラ位置線形補間
+	//float ease = easeInOutCubic(g_FixCameraTime);
 	//// ease を補間係数として使用
 	//g_Position.x = g_FixCameraOld.x * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].x * ease;
 	//g_Position.y = g_FixCameraOld.y * (1.0f - ease) + g_FixCamera[g_FixCameraIndex].y * ease;
@@ -152,18 +167,35 @@ void CameraUpdate(void)//ポリゴン更新
 	//1フレームの時間
 	const float dt = 1.0f / 60.0f;
 
-	g_Position.y = g_Target.y + CAMERA_HEIGHT;
-	// Shake
+	// --- 球面座標 → 直交座標（ここは今のままでOK） ---
+	g_Position.x = g_Target.x + cosf(g_Rotation.x) * sinf(g_Rotation.y) * CAMERA_DISTANCE;
+	g_Position.y = g_Target.y + sinf(g_Rotation.x) * CAMERA_DISTANCE;
+	g_Position.z = g_Target.z - cosf(g_Rotation.x) * cosf(g_Rotation.y) * CAMERA_DISTANCE;
+
+	// （任意）欲しいなら “基準高さ” を足す：上下視点を残したまま全体を持ち上げる
+	g_Position.y += CAMERA_HEIGHT;
+
+	// --- Shake（最後に1回だけ） ---
 	g_ShakeTime += dt;
+
 	if (g_ShakePower > 0.0f)
 	{
 		g_Position.y += sinf(g_ShakeTime * 120.0f) * 0.1f * g_ShakePower;
+		g_ShakePower -= 0.1f;
+		if (g_ShakePower < 0.0f) g_ShakePower = 0.0f;
 	}
-	g_ShakePower -= 0.1f;//徐々に減衰
-	if (g_ShakePower < 0.0f)
-	{
-		g_ShakePower = 0.0f;
-	}
+	//g_Position.y = g_Target.y + CAMERA_HEIGHT;
+	//// Shake
+	//g_ShakeTime += dt;
+	//if (g_ShakePower > 0.0f)
+	//{
+	//	g_Position.y += sinf(g_ShakeTime * 120.0f) * 0.1f * g_ShakePower;
+	//}
+	//g_ShakePower -= 0.1f;//徐々に減衰
+	//if (g_ShakePower < 0.0f)
+	//{
+	//	g_ShakePower = 0.0f;
+	//}
 }
 void CameraDraw(void)//ポリゴン描画
 {
