@@ -9,7 +9,7 @@
 #include <string>
 
 
-static MODEL* g_Model[9] = {};
+static MODEL* g_Model[10] = {};
 static XMFLOAT3 g_Rotation;
 
 
@@ -123,6 +123,7 @@ void FieldInitialize(void)
 	g_Model[6] = ModelLoad("asset\\model\\Slope1.fbx");
 	g_Model[7] = ModelLoad("asset\\model\\Slope2.fbx");
 	g_Model[8] = ModelLoad("asset\\model\\Slope3.fbx");
+	g_Model[9] = ModelLoad("asset\\model\\invisibleCube.fbx");
 
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//âÒì]èâä˙âª
 }
@@ -138,6 +139,7 @@ void FieldFinalize(void)
 	ModelRelease(g_Model[6]);
 	ModelRelease(g_Model[7]);
 	ModelRelease(g_Model[8]);
+	ModelRelease(g_Model[9]);
 }
 
 void FieldUpdate(void)

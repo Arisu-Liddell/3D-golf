@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/asset/model/cube - コピー.fbm/.mayaSwatches/block_field.png_hcm.swatch
+/asset/model/cube - コピー.fbm
+/asset/model/cube.fbm/.mayaSwatches
+/asset/model/cube.fbm/block_field.png
