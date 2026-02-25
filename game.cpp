@@ -99,7 +99,7 @@ void GameDraw(void)
 	light.LightEnable = FALSE;
 	Shader_SetLight(light);//ライト設定
 
-	ShadowDraw();
+//	ShadowDraw();
 
 	TrailDraw();
 //	ObjTrailDraw();

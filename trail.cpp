@@ -65,26 +65,43 @@ void TrailDraw(void)
 			cross.y = cameraDir.z * trailDir.x - cameraDir.x * trailDir.z;
 			cross.z = cameraDir.x * trailDir.y - cameraDir.y * trailDir.x;
 
-			//正規化
+			//外積の長さを求める
 			float length = sqrtf(cross.x * cross.x + cross.y * cross.y + cross.z * cross.z);
+
+			//正規化
 			cross.x /= length;
 			cross.y /= length;
 			cross.z /= length;
 
-			//頂点座標の設定
-			v[i * 2 + 0].position = { g_TrailPosition[i].x + cross.x * 0.1f,g_TrailPosition[i].y + cross.y * 0.1f,g_TrailPosition[i].z + cross.z * 0.1f }; //左上
-			v[i * 2 + 1].position = { g_TrailPosition[i].x - cross.x * 0.1f,g_TrailPosition[i].y - cross.y * 0.1f,g_TrailPosition[i].z - cross.z * 0.1f }; //右上
+			////頂点座標の設定
+			//v[i * 2 + 0].position = { g_TrailPosition[i].x + cross.x * 0.1f,g_TrailPosition[i].y + cross.y * 0.1f,g_TrailPosition[i].z + cross.z * 0.1f }; //左上
+			//v[i * 2 + 1].position = { g_TrailPosition[i].x - cross.x * 0.1f,g_TrailPosition[i].y - cross.y * 0.1f,g_TrailPosition[i].z - cross.z * 0.1f }; //右上
 
-			//頂点UVの設定
-			float t = (float)i / (float)(TRAIL_LENGTH - 1);
-			v[i * 2 + 0].texcoord = { 0.0f,1.0f - t, }; //左上
-			v[i * 2 + 1].texcoord = { 1.0f,1.0f - t, }; //右上
-			//v[i * 2 + 0].texcoord = { 0.5f,1.0f, }; //左上
-			//v[i * 2 + 1].texcoord = { 0.5f,0.0f, }; //右上
+			////頂点UVの設定
+			//float t = (float)i / (float)(TRAIL_LENGTH - 1);
+			//v[i * 2 + 0].texcoord = { 0.0f,1.0f - t, }; //左上
+			//v[i * 2 + 1].texcoord = { 1.0f,1.0f - t, }; //右上
+			////v[i * 2 + 0].texcoord = { 0.5f,1.0f, }; //左上
+			////v[i * 2 + 1].texcoord = { 0.5f,0.0f, }; //右上
 
-			//頂点法線ベクトルの設定
-			v[i * 2 + 0].normal = { 0.0f,0.0f,-1.0f }; //左上
-			v[i * 2 + 1].normal = { 0.0f,0.0f,-1.0f }; //右上
+			////頂点法線ベクトルの設定
+			//v[i * 2 + 0].normal = { 0.0f,0.0f,-1.0f }; //左上
+			//v[i * 2 + 1].normal = { 0.0f,0.0f,-1.0f }; //右上
+
+			v[i * 2 + 0].position.x = g_TrailPosition[i].x + cross.x * 0.1f;
+			v[i * 2 + 0].position.y = g_TrailPosition[i].y + cross.y * 0.1f;
+			v[i * 2 + 0].position.z = g_TrailPosition[i].z + cross.z * 0.1f;
+
+			v[i * 2 + 1].position.x = g_TrailPosition[i].x - cross.x * 0.1f;
+			v[i * 2 + 1].position.y = g_TrailPosition[i].y - cross.y * 0.1f;
+			v[i * 2 + 1].position.z = g_TrailPosition[i].z - cross.z * 0.1f;
+
+			v[i * 2 + 0].texcoord = { 0.0f,1.0f,};
+			v[i * 2 + 1].texcoord = { 0.5f,0.0f,};
+
+			v[i * 2 + 0].normal = { 0.0f,0.0f,-1.0f };
+			v[i * 2 + 1].normal = { 0.0f,0.0f,-1.0f };
+
 		}
 		DirectXGetDeviceContext()->Unmap(g_VertexBuffer, 0); //テクスチャの設定
 	}

@@ -70,10 +70,10 @@ void BillBordDraw(void)
 	//const float hw = w * 0.5f;
 	//const float hh = h * 0.5f;
 		//前面
-	v[4].position = { -1.0f	,1.0f	,-1.0f }; //左上
-	v[5].position = { 1.0f	,1.0f	,-1.0f }; //右上
-	v[6].position = { -1.0f	,-1.0f	,-1.0f }; //左下
-	v[7].position = { 1.0f	,-1.0f	,-1.0f }; //右上
+	v[0].position = { -1.0f	,1.0f	,-1.0f }; //左上
+	v[1].position = { 1.0f	,1.0f	,-1.0f }; //右上
+	v[2].position = { -1.0f	,-1.0f	,-1.0f }; //左下
+	v[3].position = { 1.0f	,-1.0f	,-1.0f }; //右上
 
 	v[0].texcoord = { tx,		ty, }; //左上
 	v[1].texcoord = { tx + tw,	ty, }; //右上
