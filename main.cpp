@@ -2,6 +2,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h> //Windows.h = WindowsAPIのヘッダファイル。MessageBoxなどの関数を使うのに必要
 #include <mmsystem.h>
+#include <objbase.h>   // CoInitializeEx
+#include <stdio.h>     // sprintf_s
 #include "directx.h"
 #include "debug_ostream.h"
 #include "shader.h"
@@ -14,6 +16,7 @@
 #include "game.h"
 #include "main.h"
 #include "result.h"
+#include "sound.h"
 #pragma comment(lib, "winmm.lib")
 
 //////////////////////////////////
@@ -30,6 +33,7 @@ char g_DebugStr[2048] = "ウィンドウ表示";//デバッグ表示用
 
 static SCENE g_scene = SCENE_TITLE;
 static SCENE g_next;
+static Sound* g_pSound = nullptr;
 static int g_TransitionTexture;
 static bool g_Transition;
 static float g_TransitionPositionY;
@@ -175,9 +179,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void Initialize(HWND hWnd)
 {
-	// 	//Com初期化
-	CoInitializeEx(nullptr, COINITBASE_MULTITHREADED); //COMライブラリの初期化
-	//キーボードの初期化処理
+
+
+	//HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED); // ★まずはSTAで試す（後述）
+	//if (FAILED(hr))
+	//{
+	//	char buf[256];
+	//	sprintf_s(buf, "CoInitializeEx failed. hr=0x%08X", (unsigned)hr);
+	//	MessageBoxA(hWnd, buf, "COM Error", MB_OK | MB_ICONERROR);
+	//	return; // ★COM必須ならここで止める
+	//}
+// 	//Com初期化
+CoInitializeEx(nullptr, COINITBASE_MULTITHREADED); //COMライブラリの初期化
+//キーボードの初期化処理
 	Keyboard_Initialize();
 	//DirectXの初期化処理
 	DirectXInitialize(hWnd);
@@ -189,6 +203,9 @@ void Initialize(HWND hWnd)
 	SpriteInitialize();
 	//ポリゴンの初期化
 	PolygonInitialize();
+	//音楽初期化
+	if (!Sound::GetInstance())
+		g_pSound = new Sound(hWnd);
 
 	g_TransitionTexture = TextureLoad(L"asset\\texture\\bg_01.png");
 
@@ -277,9 +294,10 @@ void Finalize(void)
 	//DirectXの終了処理
 	DirectXFinalize();
 
+	delete g_pSound;
+	g_pSound = nullptr;
 	//Com終了
 	CoUninitialize(); //COMライブラリの終了
-
 }
 
 void SetScene(SCENE scene)

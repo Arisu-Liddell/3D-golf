@@ -11,7 +11,8 @@
 
 static MODEL* g_Model[10] = {};
 static XMFLOAT3 g_Rotation;
-
+static bool g_Block2DrawEnable[Grid2Count] = {};
+static int g_Block2Loaded = 0;
 
 BLOCK* GetFieldBlock(void)
 {
@@ -22,7 +23,8 @@ BLOCK* GetFieldItem(void)
 	return g_Block2;
 }
 
-bool Field_LoadBlocksFromCSV(const char* path, BLOCK* outBlocks, int maxCount, int* outCount)
+bool Field_LoadBlocksFromCSV(const char* path, BLOCK* outBlocks, int maxCount, int* outCount,
+	uint32_t skipDrawTypeMask, bool* outDrawEnable)
 {
 	if (!outBlocks || maxCount <= 0) return false;
 
@@ -88,6 +90,12 @@ bool Field_LoadBlocksFromCSV(const char* path, BLOCK* outBlocks, int maxCount, i
 
 		outBlocks[count].Position = XMFLOAT3(x, y, z);
 		outBlocks[count].Type = type;
+		bool drawEnable = true;
+		if (type >= 0 && type < 32)
+		{
+			drawEnable = ((skipDrawTypeMask & (1u << type)) == 0);
+		}
+		if (outDrawEnable) outDrawEnable[count] = drawEnable;
 		++count;
 	}
 	if (outCount) *outCount = count;
@@ -110,10 +118,15 @@ void InitPositions()
 
 void FieldInitialize(void)
 {
-	int loaded = 0;
-	if (Field_LoadBlocksFromCSV("asset\\data\\field_objects.csv", g_Block2, Grid2Count, &loaded))
-	{
-	} 
+	InitPositions();
+
+	for (int i = 0; i < Grid2Count; ++i) g_Block2DrawEnable[i] = false; // ★まず全部無効
+	uint32_t skipMask = 0;
+	skipMask |= (1u << 9);
+
+	Field_LoadBlocksFromCSV("asset\\data\\field_objects.csv",
+		g_Block2, Grid2Count, &g_Block2Loaded, skipMask, g_Block2DrawEnable);
+
 	g_Model[0] = ModelLoad("asset\\model\\cube.fbx");
 	g_Model[1] = ModelLoad("asset\\model\\tree.fbx");
 	g_Model[2] = ModelLoad("asset\\model\\Goal.fbx");
@@ -127,6 +140,8 @@ void FieldInitialize(void)
 
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//回転初期化
 }
+
+int GetFieldItemCount() { return g_Block2Loaded; }
 
 void FieldFinalize(void)
 {
@@ -152,7 +167,6 @@ void FieldDraw(void)
 	{
 		//頂点シェーダーに変換行列を設定
 		MATRIX matrix;
-
 		matrix.World = XMMatrixIdentity();
 		matrix.Mtx = XMMatrixIdentity();
 
@@ -183,7 +197,7 @@ void FieldDraw(void)
 	{
 		//頂点シェーダーに変換行列を設定
 		MATRIX matrix;
-
+		if (!g_Block2DrawEnable[i]) continue;//描画スキップ
 		matrix.World = XMMatrixIdentity();
 		matrix.Mtx = XMMatrixIdentity();
 

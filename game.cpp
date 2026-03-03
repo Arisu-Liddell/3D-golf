@@ -19,11 +19,12 @@
 #include "Shadow.h"
 #include "Map.h"
 #include "Skydome.h"
+#include "sound.h"
 
 
 
 
-static int g_BGM;
+static int g_BGM = -1;
 static bool g_Pause;
 
 void GameInitialize(void)
@@ -44,7 +45,15 @@ void GameInitialize(void)
 	ShadowInitialize();
 	MapInitialize();
 	SkyDomeInitialize();
-
+	if (Sound::GetInstance())
+	{
+		g_BGM = Sound::GetInstance()->LoadSound("asset\\sound\\BGM.wav");
+		if (g_BGM >= 0)
+		{
+			Sound::GetInstance()->SetVolume(g_BGM, 0.3f);
+			Sound::GetInstance()->PlaySound(g_BGM, -1); // -1で無限ループ
+		}
+	}
 }
 
 
@@ -135,4 +144,9 @@ void GameFinalize(void)
 //	ObjballFinalize();
 	BallFinalize();
 	ScoreFinalize();
+	if (Sound::GetInstance() && g_BGM >= 0)
+	{
+		Sound::GetInstance()->StopSound(g_BGM);
+		g_BGM = -1;
+	}
 }

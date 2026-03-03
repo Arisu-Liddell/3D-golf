@@ -12,6 +12,7 @@
 #include "effect.h"
 #include "trail.h"
 #include "Shadow.h"
+#include "sound.h"
 
 enum BALL_STATE
 {
@@ -35,6 +36,7 @@ static XMFLOAT3 g_Velocity;//速度
 static float dt = 1.0f / 60.0f;
 static bool g_OnGroundA;
 static bool g_OnGroundB;
+static int g_JumpSE = -1; // ジャンプSE
 
 void BallHitCheck(void);
 void BallMove(void);//ポリゴン移動処理
@@ -55,6 +57,8 @@ void BallInitialize(void)
 	g_OnGroundB = false;
 	g_State  = BALL_STATE_MOVE;
 	g_StateCount = 0;
+	if (Sound::GetInstance())
+		g_JumpSE = Sound::GetInstance()->LoadSound("asset\\sound\\Jump.wav");
 
 	ResetTrailPosition(g_Position);
 }
@@ -138,6 +142,8 @@ void BallMove(void)
 			g_Velocity.y += 7.0f;
 
 			CreateEffect(g_Position);
+			if (Sound::GetInstance() && g_JumpSE >= 0)
+				Sound::GetInstance()->PlaySound(g_JumpSE, 0);
 
 			ScoreAdd(1);//スコア加算
 		}
@@ -324,14 +330,12 @@ static void ResolveBallVsBlocks(
 						g_Position.z = blocks[i].Position.z + collitionRadius + ballRadius;
 						CameraShake(4.0f);//カメラシェイク
 						CreateEffect(g_Position);
-						ScoreAdd(1);//スコア加算
 					}
 					else
 					{
 						g_Position.z = blocks[i].Position.z - collitionRadius - ballRadius;
 						CameraShake(4.0f);//カメラシェイク
 						CreateEffect(g_Position);
-						ScoreAdd(1);//スコア加算
 					}
 					g_Velocity.z *= -0.5f;
 				}
@@ -430,9 +434,6 @@ void BallHitCheck(void)
 	BLOCK* block = GetFieldBlock();
 	BLOCK* item = GetFieldItem();
 
-	// block：元コードは「g_Stateが真のときだけ接地エフェクト＆接地更新」っぽい挙動が混ざっていたので gateLandingEffect=true
 	ResolveBallVsBlocks(block, GridCount, 0.7f, g_OnGroundA);
-
-	// item：元コードは g_OnGroundB を普通に使っていたので gateLandingEffect=false
-	ResolveBallVsBlocks(item, Grid2Count, 0.3f, g_OnGroundB);
+	ResolveBallVsBlocks(item, GetFieldItemCount(), 0.3f, g_OnGroundB);
 }

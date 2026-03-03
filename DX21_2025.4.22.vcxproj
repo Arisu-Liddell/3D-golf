@@ -157,7 +157,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Skydome.cpp" />
-    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="Soundinstance.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -191,7 +191,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Skydome.h" />
-    <ClInclude Include="Sound.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="SoundInstance.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />

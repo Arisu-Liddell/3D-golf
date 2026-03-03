@@ -21,7 +21,7 @@ XMFLOAT3 GetGoalPosition(void)
 void GoalInitialize(void)
 {
 	g_Model = ModelLoad("asset\\model\\goal.fbx");
-	g_Position = XMFLOAT3(3.0f, 1.0f, 5.0f);//ˆÊ’u‰Šú‰»
+	g_Position = XMFLOAT3(0.0f, 3.0f, 10.0f);//ˆÊ’u‰Šú‰»
 	g_Rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);//‰ñ“]‰Šú‰»
 }
 

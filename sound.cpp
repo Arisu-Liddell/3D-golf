@@ -13,10 +13,10 @@ Sound::Sound(HWND hWnd)
 	HRESULT hr = 0;
 
 	// COMライブラリの初期化ｐ
-	CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 	if (FAILED(hr))
 	{
-		MessageBox(hWnd, L"COM初期化に失敗！", L"警告！", MB_ICONWARNING);
+		MessageBoxW(hWnd, L"COM初期化に失敗！", L"警告！", MB_ICONWARNING);
 		return;
 	}
 
@@ -24,7 +24,7 @@ Sound::Sound(HWND hWnd)
 	hr = XAudio2Create(&g_pXAudio2, 0);
 	if (FAILED(hr))
 	{
-		MessageBox(hWnd, L"XAudio2オブジェクトの作成に失敗！", L"警告！", MB_ICONWARNING);
+		MessageBoxW(hWnd, L"XAudio2オブジェクトの作成に失敗！", L"警告！", MB_ICONWARNING);
 		// COMライブラリの終了処理
 		CoUninitialize();
 		return;
@@ -34,7 +34,7 @@ Sound::Sound(HWND hWnd)
 	hr = g_pXAudio2->CreateMasteringVoice(&g_pMasteringVoice);
 	if (FAILED(hr))
 	{
-		MessageBox(hWnd, L"マスターボイスの生成に失敗！", L"警告！", MB_ICONWARNING);
+		MessageBoxW(hWnd, L"マスターボイスの生成に失敗！", L"警告！", MB_ICONWARNING);
 
 		if (g_pXAudio2)
 		{
@@ -99,8 +99,10 @@ Sound::~Sound()
 	g_SoundNames.clear();
 
 	// マスターボイスの破棄
-	if (g_pMasteringVoice) { g_pMasteringVoice->DestroyVoice();
-	g_pMasteringVoice = NULL; }
+	if (g_pMasteringVoice) {
+		g_pMasteringVoice->DestroyVoice();
+		g_pMasteringVoice = NULL;
+	}
 
 	if (g_pXAudio2)
 	{
@@ -153,7 +155,7 @@ int Sound::LoadSound(const char* pFilename)
 
 	if (g_SoundNames.size() >= MAX_SOUND_NUM)
 	{
-		MessageBox(NULL, L"最大読み込み数を超過", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"最大読み込み数を超過", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 
@@ -169,12 +171,12 @@ int Sound::LoadSound(const char* pFilename)
 	hFile = CreateFileW(wideFilename.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 	{
-		MessageBox(NULL, L"サウンドデータファイルの生成に失敗！(1)", L"警告！", MB_ICONWARNING);
- 		return -1;
+		MessageBoxW(NULL, L"サウンドデータファイルの生成に失敗！(1)", L"警告！", MB_ICONWARNING);
+		return -1;
 	}
 	if (SetFilePointer(hFile, 0, NULL, FILE_BEGIN) == INVALID_SET_FILE_POINTER)
 	{// ファイルポインタを先頭に移動
-		MessageBox(NULL, L"サウンドデータファイルの生成に失敗！(2)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"サウンドデータファイルの生成に失敗！(2)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 
@@ -184,18 +186,18 @@ int Sound::LoadSound(const char* pFilename)
 	hr = CheckChunk(hFile, 'FFIR', &dwChunkSize, &dwChunkPosition);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"WAVEファイルのチェックに失敗！(1)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"WAVEファイルのチェックに失敗！(1)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 	hr = ReadChunkData(hFile, &dwFiletype, sizeof(DWORD), dwChunkPosition);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"WAVEファイルのチェックに失敗！(2)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"WAVEファイルのチェックに失敗！(2)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 	if (dwFiletype != 'EVAW')
 	{
-		MessageBox(NULL, L"WAVEファイルのチェックに失敗！(3)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"WAVEファイルのチェックに失敗！(3)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 
@@ -203,13 +205,13 @@ int Sound::LoadSound(const char* pFilename)
 	hr = CheckChunk(hFile, ' tmf', &dwChunkSize, &dwChunkPosition);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"フォーマットチェックに失敗！(1)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"フォーマットチェックに失敗！(1)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 	hr = ReadChunkData(hFile, &wfx, dwChunkSize, dwChunkPosition);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"フォーマットチェックに失敗！(2)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"フォーマットチェックに失敗！(2)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 
@@ -218,20 +220,20 @@ int Sound::LoadSound(const char* pFilename)
 	hr = CheckChunk(hFile, 'atad', &audioSize, &dwChunkPosition);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"オーディオデータ読み込みに失敗！(1)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"オーディオデータ読み込みに失敗！(1)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 	BYTE* audioData = (BYTE*)malloc(audioSize);
 	if (!audioData)
 	{
-		MessageBox(NULL, L"メモリ割り当てに失敗", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"メモリ割り当てに失敗", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 	hr = ReadChunkData(hFile, audioData, audioSize, dwChunkPosition);
 	if (FAILED(hr))
 	{
 		free(audioData);
-		MessageBox(NULL, L"オーディオデータ読み込みに失敗！(2)", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"オーディオデータ読み込みに失敗！(2)", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 
@@ -241,7 +243,7 @@ int Sound::LoadSound(const char* pFilename)
 	if (FAILED(hr))
 	{
 		free(audioData);
-		MessageBox(NULL, L"ソースボイスの生成に失敗！", L"警告！", MB_ICONWARNING);
+		MessageBoxW(NULL, L"ソースボイスの生成に失敗！", L"警告！", MB_ICONWARNING);
 		return -1;
 	}
 
@@ -294,59 +296,59 @@ void Sound::PlaySound(int index, int loopCount)
 
 // [PlaySound3D] 置き換えブロック（1行目から）
 void Sound::PlaySound3D(int index, int loopCount,
-    float emitterX, float emitterY, float emitterZ)
+	float emitterX, float emitterY, float emitterZ)
 {
-    if (index < 0 || index >= static_cast<int>(g_apSourceVoice.size()))
-        return;
+	if (index < 0 || index >= static_cast<int>(g_apSourceVoice.size()))
+		return;
 
-    XAUDIO2_VOICE_STATE xa2state{};
-    g_apSourceVoice[index]->GetState(&xa2state);
+	XAUDIO2_VOICE_STATE xa2state{};
+	g_apSourceVoice[index]->GetState(&xa2state);
 
-    // --- 再生中でも「後から呼んだ方を鳴らす」ため、必ず入れ替える ---
-    if (xa2state.BuffersQueued != 0)
-    {
-        g_apSourceVoice[index]->Stop(0);
-        g_apSourceVoice[index]->FlushSourceBuffers();
-    }
+	// --- 再生中でも「後から呼んだ方を鳴らす」ため、必ず入れ替える ---
+	if (xa2state.BuffersQueued != 0)
+	{
+		g_apSourceVoice[index]->Stop(0);
+		g_apSourceVoice[index]->FlushSourceBuffers();
+	}
 
-    XAUDIO2_BUFFER buffer{};
-    buffer.AudioBytes = g_aSizeAudio[index];
-    buffer.pAudioData = g_apDataAudio[index];
-    buffer.Flags = XAUDIO2_END_OF_STREAM;
-    if (loopCount < 0) loopCount = XAUDIO2_LOOP_INFINITE;
-    buffer.LoopCount = loopCount;
+	XAUDIO2_BUFFER buffer{};
+	buffer.AudioBytes = g_aSizeAudio[index];
+	buffer.pAudioData = g_apDataAudio[index];
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	if (loopCount < 0) loopCount = XAUDIO2_LOOP_INFINITE;
+	buffer.LoopCount = loopCount;
 
-    g_apSourceVoice[index]->SubmitSourceBuffer(&buffer);
-    g_apSourceVoice[index]->Start(0);
+	g_apSourceVoice[index]->SubmitSourceBuffer(&buffer);
+	g_apSourceVoice[index]->Start(0);
 
-    // ---- ここから下（X3DAudio計算～SetOutputMatrix）は今のままでOK ----
-    XAUDIO2_VOICE_DETAILS srcDetails{};
-    g_apSourceVoice[index]->GetVoiceDetails(&srcDetails);
-    const UINT32 srcChannels = srcDetails.InputChannels;
+	// ---- ここから下（X3DAudio計算～SetOutputMatrix）は今のままでOK ----
+	XAUDIO2_VOICE_DETAILS srcDetails{};
+	g_apSourceVoice[index]->GetVoiceDetails(&srcDetails);
+	const UINT32 srcChannels = srcDetails.InputChannels;
 
-    X3DAUDIO_EMITTER emitter{};
-    emitter.OrientFront = { 0.0f, 0.0f, 1.0f };
-    emitter.OrientTop   = { 0.0f, 1.0f, 0.0f };
-    emitter.Position    = { emitterX, emitterY, emitterZ };
-    emitter.Velocity    = { 0.0f, 0.0f, 0.0f };
-    emitter.ChannelCount = srcChannels;
-    emitter.CurveDistanceScaler = 1.0f;
-    emitter.DopplerScaler = 1.0f;
+	X3DAUDIO_EMITTER emitter{};
+	emitter.OrientFront = { 0.0f, 0.0f, 1.0f };
+	emitter.OrientTop = { 0.0f, 1.0f, 0.0f };
+	emitter.Position = { emitterX, emitterY, emitterZ };
+	emitter.Velocity = { 0.0f, 0.0f, 0.0f };
+	emitter.ChannelCount = srcChannels;
+	emitter.CurveDistanceScaler = 1.0f;
+	emitter.DopplerScaler = 1.0f;
 
-    static float s_azimuthsStereo[2] = { -X3DAUDIO_PI / 2.0f, X3DAUDIO_PI / 2.0f };
-    if (srcChannels == 2) emitter.pChannelAzimuths = s_azimuthsStereo;
+	static float s_azimuthsStereo[2] = { -X3DAUDIO_PI / 2.0f, X3DAUDIO_PI / 2.0f };
+	if (srcChannels == 2) emitter.pChannelAzimuths = s_azimuthsStereo;
 
-    m_MatrixCoefficients.resize(static_cast<size_t>(srcChannels) * m_DstChannels);
-    X3DAUDIO_DSP_SETTINGS dsp{};
-    dsp.SrcChannelCount = srcChannels;
-    dsp.DstChannelCount = m_DstChannels;
-    dsp.pMatrixCoefficients = m_MatrixCoefficients.data();
+	m_MatrixCoefficients.resize(static_cast<size_t>(srcChannels) * m_DstChannels);
+	X3DAUDIO_DSP_SETTINGS dsp{};
+	dsp.SrcChannelCount = srcChannels;
+	dsp.DstChannelCount = m_DstChannels;
+	dsp.pMatrixCoefficients = m_MatrixCoefficients.data();
 
-    X3DAudioCalculate(m_X3DInstance, &m_Listener, &emitter, X3DAUDIO_CALCULATE_MATRIX, &dsp);
+	X3DAudioCalculate(m_X3DInstance, &m_Listener, &emitter, X3DAUDIO_CALCULATE_MATRIX, &dsp);
 
-    g_apSourceVoice[index]->SetOutputMatrix(nullptr, srcChannels, m_DstChannels, m_MatrixCoefficients.data());
+	g_apSourceVoice[index]->SetOutputMatrix(nullptr, srcChannels, m_DstChannels, m_MatrixCoefficients.data());
 
- }
+}
 
 void Sound::UpdateSound3D(int index, float emitterX, float emitterY, float emitterZ)
 {
